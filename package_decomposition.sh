@@ -19,7 +19,8 @@ function decomposition() {
     target=$1
     for src_file in ${targetFiles[@]}; do
         file_name=`basename $src_file`
-        package_dir=`cat $src_file | sed -n -e "s/^package\s*//p" | sed -n -e "s/\./\//gp"`
+        package=`cat $src_file | sed -n -e "s/^package\s*//p"`
+        package_dir=`echo ${package/\./\//}`
         dest_dir=${PWD}/$target/$package_dir
         dest_file=$dest_dir/$file_name
 
