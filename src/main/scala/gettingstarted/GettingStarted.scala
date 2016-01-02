@@ -27,10 +27,16 @@ object MyModule {
     go(n, 0, 1)
   }
 
+  def formatResult(name: String, n: Int, f: Int => Int) =
+    s"The ${name} of ${n} is ${f(n)}."
+
   private def formatAbs(x: Int) = {
     val msg = "The absolute value of %d is %d"
     msg.format(x, abs(x))
   }
+
+  private def formatFactorial(n: Int) =
+    s"The factorial of ${n} is ${factorial(n)}."
 
   def main(args: Array[String]): Unit = {
     println(formatAbs(-42))
