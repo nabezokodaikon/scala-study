@@ -30,6 +30,18 @@ object MyModule {
   def formatResult(name: String, n: Int, f: Int => Int) =
     s"The ${name} of ${n} is ${f(n)}."
 
+  // EXERCIZE 2.2
+  // 指定された比較関数に従ってArray[A]がソートされているかどうかを調べる。
+  def isSorted[A](as: Array[A], ordered: (A, A) => Boolean): Boolean = {
+    def loop(n: Int): Boolean = {
+      if (n >= as.length - 1) true
+      else if (ordered(as(n), as(n + 1))) loop(n + 1)
+      else false
+    }
+
+    loop(0)
+  }
+
   private def formatAbs(x: Int) = {
     val msg = "The absolute value of %d is %d"
     msg.format(x, abs(x))
