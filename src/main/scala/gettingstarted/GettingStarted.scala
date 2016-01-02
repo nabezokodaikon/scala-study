@@ -48,6 +48,12 @@ object MyModule {
     a => b => f(a, b)
   }
 
+  // EXERCIZE 2.4
+  // 非カリー化
+  def uncurry[A, B, C](f: A => B => C): (A, B) => C = {
+    (a, b) => f(a)(b)
+  }
+
   private def formatAbs(x: Int) = {
     val msg = "The absolute value of %d is %d"
     msg.format(x, abs(x))
