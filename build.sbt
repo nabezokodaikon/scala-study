@@ -36,5 +36,3 @@ lazy val root = (project.in(file(".")))
       )
     }
   )
-
-initialCommands := "import com.github.nabezokodaikon._"
