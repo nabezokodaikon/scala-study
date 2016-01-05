@@ -44,6 +44,21 @@ object List {
     case _                    => l
   }
 
+  def append[A](a1: List[A], a2: List[A]): List[A] = a1 match {
+    case Nil        => a2
+    case Cons(h, t) => Cons(h, append(t, a2))
+  }
+
+  // EXERCISE 3.6
+  // リストの末尾を除いたリストを返す。
+  def init[A](l: List[A]): List[A] = {
+    l match {
+      case Nil          => sys.error("init on empty list")
+      case Cons(_, Nil) => Nil
+      case Cons(h, t)   => Cons(h, init(t))
+    }
+  }
+
   def apply[A](as: A*): List[A] =
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))
