@@ -82,6 +82,17 @@ object List {
       case Cons(h, t) => foldLeft(t, f(z, h))(f)
     }
 
+  // EXERCISE 3.11
+  def sumLeft(l: List[Int]): Int =
+    foldLeft(l, 0)(_ + _)
+
+  def productLeft(l: List[Double]): Double = {
+    foldLeft(l, 1.0)(_ * _)
+  }
+
+  def lengthLeft[A](l: List[A]): Int =
+    foldLeft(l, 0)((acc, _) => acc + 1)
+
   def apply[A](as: A*): List[A] =
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))
