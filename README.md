@@ -43,3 +43,5 @@ foo(1, 2, 3)
 val ints: Seq[Int] = Seq(1, 2, 3)
 foo(ints: _*)
 ```
+#### foldRight
+リストを最後まで走査してから、畳込みを開始する。
