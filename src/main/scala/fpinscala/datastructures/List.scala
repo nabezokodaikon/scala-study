@@ -59,12 +59,6 @@ object List {
     }
   }
 
-  def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B =
-    as match {
-      case Nil => z
-      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
-    }
-
   def sum2(ns: List[Int]): Int =
     foldRight(ns, 0)((x, y) => x + y)
 
@@ -74,13 +68,6 @@ object List {
   // EXERCISE 3.9
   def length[A](as: List[A]): Int =
     foldRight(as, 0)((_, acc) => 1 + acc)
-
-  // EXERCISE 3.10
-  def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B =
-    as match {
-      case Nil => z
-      case Cons(h, t) => foldLeft(t, f(z, h))(f)
-    }
 
   // EXERCISE 3.11
   def sumLeft(l: List[Int]): Int =
@@ -96,6 +83,24 @@ object List {
   // EXERCISE 3.12
   def reverse[A](l: List[A]): List[A] =
     foldLeft(l, List[A]())((acc, h) => Cons(h, acc))
+
+  def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B =
+    as match {
+      case Nil => z
+      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+    }
+
+  // EXERCISE 3.10
+  def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B =
+    as match {
+      case Nil => z
+      case Cons(h, t) => foldLeft(t, f(z, h))(f)
+    }
+
+  // EXERCISE 3.13
+  def foldLeftViaFoldRight[A, B](as: List[A], z: B)(f: (B, A) => B): B =
+    TODO
+
 
   def apply[A](as: A*): List[A] =
     if (as.isEmpty) Nil
