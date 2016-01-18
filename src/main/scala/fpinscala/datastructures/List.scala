@@ -98,9 +98,16 @@ object List {
     }
 
   // EXERCISE 3.13
-  def foldLeftViaFoldRight[A, B](as: List[A], z: B)(f: (B, A) => B): B =
-    TODO
+  def foldRightViaFoldLeft[A, B](l: List[A], z: B)(f: (A, B) => B): B =
+    foldLeft(reverse(l), z)((b, a) => f(a, b))
 
+  def foldRightViaFoldLeft_1[A, B](l: List[A], z: B)(f: (A, B) => B): B = {
+    val func = foldLeft(l, (b: B) => b)((g, a) => b => g(f(a, b)))
+    func(z)
+  }
+
+  def foldLeftViaFoldRight[A, B](l: List[A], z: B)(f: (B, A) => B): B =
+    foldRight(l, (b: B) => b)((a, g) => b => g(f(b, a)))(z)
 
   def apply[A](as: A*): List[A] =
     if (as.isEmpty) Nil
