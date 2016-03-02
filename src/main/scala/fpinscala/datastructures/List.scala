@@ -130,6 +130,14 @@ object List {
     foldRight(as, Nil: List[B])((h, t) => Cons(f(h), t))
   }
 
+  // EXERCISE 3.19
+  def filter[A](as: List[A])(f: A => Boolean): List[A] = {
+    foldRight(as, Nil: List[A])((h, t) => f(h) match {
+      case true => Cons(h, t)
+      case _ => t
+    })
+  }
+
   def apply[A](as: A*): List[A] =
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))

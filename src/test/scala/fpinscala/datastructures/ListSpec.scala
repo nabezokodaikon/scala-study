@@ -17,4 +17,10 @@ class ListSpec extends FlatSpec {
     val ret = List.map(l)(a => a + 2)
     assert(ret === List(3, 4, 5))
   }
+
+  it should "EXERCISE 3.19 filter" in {
+    val l = List(1, 2, 3, 4, 5)
+    val ret = List.filter(l)(a => a % 2 == 0)
+    assert(ret === List(2, 4))
+  }
 }
