@@ -11,4 +11,10 @@ class ListSpec extends FlatSpec {
     val ret = List.add1(l)
     assert(ret === List(2, 3, 4))
   }
+
+  it should "EXERCISE 3.18 map" in {
+    val l = List(1, 2, 3)
+    val ret = List.map(l)(a => a + 2)
+    assert(ret === List(3, 4, 5))
+  }
 }

@@ -125,6 +125,11 @@ object List {
   def doubleToString(l: List[Double]): List[String] =
     foldRight(l, Nil: List[String])((h, t) => Cons(h.toString, t))
 
+  // EXERCISE 3.18
+  def map[A, B](as: List[A])(f: A => B): List[B] = {
+    foldRight(as, Nil: List[B])((h, t) => Cons(f(h), t))
+  }
+
   def apply[A](as: A*): List[A] =
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))
