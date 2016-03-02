@@ -117,6 +117,10 @@ object List {
   def concat[A](l: List[List[A]]): List[A] =
     foldRight(l, Nil: List[A])(append)
 
+  // EXERCISE 3.16
+  def add1(l: List[Int]): List[Int] =
+    foldRight(l, Nil: List[Int])((h, t) => Cons(h + 1, t))
+
   def apply[A](as: A*): List[A] =
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))
