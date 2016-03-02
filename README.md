@@ -3,6 +3,17 @@
 ## 答え、解説
 [fpinscala](https://github.com/fpinscala/fpinscala)
 
+## テスト実行方法
+### 全てのテストを実行
+```
+scala > test
+```
+
+### 指定のファイルのテストを実行
+```
+scala > testOnly fpinscala.gettingstarted.MyModuleSpec
+```
+
 ## メモ
 ### 用語
 #### 純粋関数
