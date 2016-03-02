@@ -121,6 +121,10 @@ object List {
   def add1(l: List[Int]): List[Int] =
     foldRight(l, Nil: List[Int])((h, t) => Cons(h + 1, t))
 
+  // EXERCISE 3.17
+  def doubleToString(l: List[Double]): List[String] =
+    foldRight(l, Nil: List[String])((h, t) => Cons(h.toString, t))
+
   def apply[A](as: A*): List[A] =
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))
