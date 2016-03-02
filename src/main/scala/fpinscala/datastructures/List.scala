@@ -109,6 +109,10 @@ object List {
   def foldLeftViaFoldRight[A, B](l: List[A], z: B)(f: (B, A) => B): B =
     foldRight(l, (b: B) => b)((a, g) => b => g(f(b, a)))(z)
 
+  // EXERCISE 3.14
+  def appendViaFoldRight[A](l: List[A], r: List[A]): List[A] =
+    foldRight(l, r)((a, b) => Cons(a, b))
+
   def apply[A](as: A*): List[A] =
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))
