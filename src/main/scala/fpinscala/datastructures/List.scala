@@ -138,6 +138,10 @@ object List {
     })
   }
 
+  // EXERCISE 3.20
+  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] =
+    concat(map(as)(f))
+
   def apply[A](as: A*): List[A] =
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))
