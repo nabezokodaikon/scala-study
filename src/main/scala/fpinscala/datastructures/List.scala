@@ -142,6 +142,13 @@ object List {
   def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] =
     concat(map(as)(f))
 
+  // EXERCISE 3.21
+  def filterViaFlatMap[A](as: List[A])(f: A => Boolean): List[A] =
+    flatMap(as)(i => f(i) match {
+      case true => List(i)
+      case false => Nil
+    })
+
   def apply[A](as: A*): List[A] =
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))

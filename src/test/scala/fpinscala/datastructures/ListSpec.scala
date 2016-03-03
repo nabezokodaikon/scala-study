@@ -29,4 +29,10 @@ class ListSpec extends FlatSpec {
     val ret = List.flatMap(l)(i => List(i, i))
     assert(ret === List(1, 1, 2, 2, 3, 3))
   }
+
+  it should "EXERCISE 3.21 filterViaFlatMap" in {
+    val l = List(1, 2, 3, 4, 5)
+    val ret = List.filterViaFlatMap(l)(i => i > 3)
+    assert(ret === List(4, 5))
+  }
 }
