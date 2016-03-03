@@ -42,4 +42,11 @@ class ListSpec extends FlatSpec {
     val ret = List.addPairwise(a, b)
     assert(ret === List(5, 7, 9))
   }
+
+  it should "EXERCISE 3.23 zipWith" in {
+    val a = List(1, 2, 3)
+    val b = List(4, 5, 6)
+    val ret = List.zipWith(a, b)((i, j) => i * j)
+    assert(ret === List(4, 10, 18))
+  }
 }
