@@ -35,4 +35,11 @@ class ListSpec extends FlatSpec {
     val ret = List.filterViaFlatMap(l)(i => i > 3)
     assert(ret === List(4, 5))
   }
+
+  it should "EXERCISE 3.22 addPairwise" in {
+    val a = List(1, 2, 3)
+    val b = List(4, 5, 6)
+    val ret = List.addPairwise(a, b)
+    assert(ret === List(5, 7, 9))
+  }
 }
