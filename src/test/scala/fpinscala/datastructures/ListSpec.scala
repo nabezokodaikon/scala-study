@@ -49,4 +49,14 @@ class ListSpec extends FlatSpec {
     val ret = List.zipWith(a, b)((i, j) => i * j)
     assert(ret === List(4, 10, 18))
   }
+
+  it should "EXERCISE 3.24 hasSubsequence" in {
+    val l = List(1, 2, 3, 4)
+    val a = Nil
+    assert(List.hasSubsequence(l, a))
+    val b = List(1, 3)
+    assert(!List.hasSubsequence(l, b))
+    val c = List(2, 3)
+    assert(List.hasSubsequence(l, c))
+  }
 }
