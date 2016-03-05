@@ -20,4 +20,22 @@ class TreeSpec extends FlatSpec {
     assert(ret == 100)
   }
 
+  it should "EXERCISE 3.27 depth" in {
+    val t =
+      Branch(
+        Branch(
+          Leaf(1),
+          Leaf(100)
+        ),
+        Branch(Leaf(50),
+          Branch(
+            Leaf(1),
+            Leaf(100)
+          )
+        )
+      )
+    val ret = Tree.depth(t)
+    assert(ret == 3)
+  }
+
 }
