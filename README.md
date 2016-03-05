@@ -35,6 +35,19 @@ scala > testOnly fpinscala.gettingstarted.MyModuleSpec
 #### 多相関数
 複数の型のデータを操作する関数。
 
+#### 部分関数(partial function)
+一部の入力に対して定義されない関数のこと。
+```
+// この関数は空でないSeqの入力は定義されているが、
+// 空のSeqに対する入力が定義されていない。
+def mean(xs: Seq[Double]): Double = {
+  if (xs.isEmpty)
+    throw new ArithmeticException("mean of empty list!")
+  else xs.sum / xs.length
+}
+```
+
+
 ### Tips
 #### :paste
 REPLで`:paste`と入力すると、複数行を入力できるモードになる。
