@@ -6,7 +6,7 @@ class TreeSpec extends FlatSpec {
 
   behavior of "Tree テスト"
 
-  it should "EXERCISE 3.25 add1" in {
+  it should "EXERCISE 3.25 size" in {
     val t = Branch(Branch(Leaf(1), Leaf(1)),
       Branch(Leaf(1), Leaf(1)))
     val ret = Tree.size(t)
