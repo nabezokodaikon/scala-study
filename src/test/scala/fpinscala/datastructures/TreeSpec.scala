@@ -13,4 +13,11 @@ class TreeSpec extends FlatSpec {
     assert(ret == 7)
   }
 
+  it should "EXERCISE 3.26 maximum" in {
+    val t = Branch(Branch(Leaf(1), Leaf(100)),
+      Branch(Leaf(50), Leaf(8)))
+    val ret = Tree.maximum(t)
+    assert(ret == 100)
+  }
+
 }
