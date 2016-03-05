@@ -38,4 +38,31 @@ class TreeSpec extends FlatSpec {
     assert(ret == 3)
   }
 
+  it should "EXERCISE 3.28 map" in {
+    val a =
+      Branch(
+        Branch(
+          Leaf(1),
+          Leaf(100)
+        ),
+        Branch(
+          Leaf(50),
+          Leaf(8)
+        )
+      )
+    val r = Tree.map(a)(_.toString)
+    val b =
+      Branch(
+        Branch(
+          Leaf("1"),
+          Leaf("100")
+        ),
+        Branch(
+          Leaf("50"),
+          Leaf("8")
+        )
+      )
+    assert(r == b)
+  }
+
 }
