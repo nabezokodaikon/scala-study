@@ -29,4 +29,22 @@ object Tree {
     case Leaf(a) => Leaf(f(a))
     case Branch(l, r) => Branch(map(l)(f), map(r)(f))
   }
+
+  // EXERCISE 3.29
+  def fold[A, B](t: Tree[A])(l: A => B)(b: (B, B) => B): B = t match {
+    case Leaf(v) => l(v)
+    case Branch(x, y) => b(fold(x)(l)(b), fold(y)(l)(b))
+  }
+
+  def sizeViaFold[A](t: Tree[A]): Int =
+    fold(t)(l => 1)(1 + _ + _)
+
+  def maximumViaFold(t: Tree[Int]): Int =
+    fold(t)(a => a)(_.max(_))
+
+  def depthViaFold[A](t: Tree[A]): Int =
+    fold(t)(a => 0)((1 + _.max(_)))
+
+  def mapViaFold[A, B](t: Tree[A])(f: A => B): Tree[B] =
+    fold(t)(a => Leaf(f(a)): Tree[B])(Branch(_, _))
 }
