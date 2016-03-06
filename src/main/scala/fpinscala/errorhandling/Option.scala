@@ -1,21 +1,48 @@
 package fpinscala.errorhandling
 
 sealed trait Option[+A] {
+
+  // EXERCIZE 4.1 
   // Option が None 出ない場合は f を適用。
-  def map[B](f: B => A): Option[B]
+  def map[B](f: A => B): Option[B] = this match {
+    case None => None
+    case Some(a) => Some(f(a))
+  }
 
+  // EXERCIZE 4.1 
   // Option が None 出ない場合は、失敗する可能性のある f を適用。
-  def flatMap[B](f: A => Option[B]): Option[B]
+  def flatMap[B](f: A => Option[B]): Option[B] = this match {
+    case None => None
+    case Some(a) => f(a)
+  }
 
+  def flatMap_1[B](f: A => Option[B]): Option[B] =
+    map(f).getOrElse(None)
+
+  // EXERCIZE 4.1 
   // B >: A は、パラメータ B の型が A の型に等しいか、
   // A のスーパークラスでなければならないことを示す。
-  def getOrElse[B >: A](default: => B):B
+  def getOrElse[B >: A](default: => B): B = this match {
+    case None => default
+    case Some(a) => a
+  }
 
+  // EXERCIZE 4.1 
   // 必要でない限り、ob を評価しない。
-  def orElse[B >: A](ob: => Option[B]): Option[B]
+  def orElse[B >: A](ob: => Option[B]): Option[B] = this match {
+    case None => ob
+    case _ => this
+  }
 
+  def orElse_1[B >: A](ob: => Option[B]): Option[B] =
+    map(Some(_)).getOrElse(ob)
+
+  // EXERCIZE 4.1 
   // 値が f の条件を満たさない場合は、Some を None に変換。
-  def filter(f: A => Boolean):Option[A]
+  def filter(f: A => Boolean): Option[A] = this match {
+    case Some(a) if f(a) => this
+    case _ => None
+  }
 }
 
 case class Some[+A](get: A) extends Option[A]
