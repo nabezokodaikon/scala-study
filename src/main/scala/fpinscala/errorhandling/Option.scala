@@ -70,7 +70,15 @@ object Option {
   }
 
   def map2_1[X, Y, Z](a: Option[X], b: Option[Y])(f: (X, Y) => Z): Option[Z] =
-    a.flatMap(aa => b.map(bb => f(aa, bb)))
+    a.flatMap(aa =>
+      b.map(bb =>
+        f(aa, bb)))
+
+  def map2ViaFor[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
+    for {
+      aa <- a
+      bb <- b
+    } yield f(aa, bb)
 
   /** EXERCIZE 4.4 */
   def sequence[A](a: List[Option[A]]): Option[List[A]] =
