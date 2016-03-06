@@ -56,4 +56,11 @@ class OptionSpec extends FlatSpec {
     val ret = Option.variance(xs)
     assert(ret == Some(1.25))
   }
+
+  it should "EXERCIZE 4.3 map2" in {
+    val a = Option.map2(Some(2), Some(3))((x, y) => x + y)
+    val b = Option.map2_1(Some(2), Some(3))((x, y) => x + y)
+    assert(a == Some(5))
+    assert(a == b)
+  }
 }

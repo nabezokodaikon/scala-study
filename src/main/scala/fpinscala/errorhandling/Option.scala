@@ -62,4 +62,13 @@ object Option {
   def lift[A, B](f: A => B): Option[A] => Option[B] = _.map(f)
 
   def absO: Option[Double] => Option[Double] = lift(math.abs)
+
+  /** EXERCIZE 4.3 */
+  def map2[X, Y, Z](a: Option[X], b: Option[Y])(f: (X, Y) => Z): Option[Z] = (a, b) match {
+    case (Some(aa), Some(bb)) => Some(f(aa, bb))
+    case _ => None
+  }
+
+  def map2_1[X, Y, Z](a: Option[X], b: Option[Y])(f: (X, Y) => Z): Option[Z] =
+    a.flatMap(aa => b.map(bb => f(aa, bb)))
 }
