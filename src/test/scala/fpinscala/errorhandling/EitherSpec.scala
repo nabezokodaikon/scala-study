@@ -25,4 +25,38 @@ class EitherSpec extends FlatSpec {
       }
     }
   }
+
+  it should "EXERCIZE 4.6 map" in {
+    assert {
+      Left(new Exception("")).map(i => i) match {
+        case Left(e) => true
+        case _ => false
+      }
+    }
+    assert(Right(1).map(i => i + 1) == Right(2))
+  }
+
+  it should "EXERCIZE 4.6 flatMap" in {
+    assert {
+      Left(new Exception("")).flatMap(i => i) match {
+        case Left(e) => true
+        case _ => false
+      }
+    }
+    assert(Right(1).flatMap(i => Either.Try(i + 1)) == Right(2))
+  }
+
+  it should "EXERCIZE 4.6 orElse" in {
+    assert(Left(new Exception("")).orElse(Right(1)) == Right(1))
+    assert(Right(2).orElse(Right(1)) == Right(2))
+  }
+
+  it should "EXERCIZE 4.6 map2" in {
+    val a = Right(100)
+    val b = Right(0.5)
+    val r1 = a.map2(b)(_ * _)
+    val r2 = a.map2(b)(_ * _)
+    assert(r1 == Right(50.0))
+    assert(r1 == r2)
+  }
 }
