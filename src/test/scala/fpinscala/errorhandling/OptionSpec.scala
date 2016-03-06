@@ -50,4 +50,10 @@ class OptionSpec extends FlatSpec {
     assert(Some(1).filter(i => i == 2) == None)
     assert(None.filter(i => i == 2) == None)
   }
+
+  it should "EXERCIZE 4.2 variance" in {
+    val xs = Seq(1.0, 2, 3, 4)
+    val ret = Option.variance(xs)
+    assert(ret == Some(1.25))
+  }
 }

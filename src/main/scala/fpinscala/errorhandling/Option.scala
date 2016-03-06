@@ -55,4 +55,8 @@ object Option {
     else Some(xs.sum / xs.length)
   }
 
+  // EXERCIZE 4.2
+  def variance(xs: Seq[Double]): Option[Double] =
+    mean(xs).flatMap(m => mean(xs.map(x => math.pow(x - m, 2))))
+
 }
