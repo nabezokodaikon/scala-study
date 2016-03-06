@@ -63,4 +63,18 @@ class OptionSpec extends FlatSpec {
     assert(a == Some(5))
     assert(a == b)
   }
+
+  it should "EXERCIZE 4.4 sequence" in {
+    val a = List(Some(1), Some(2))
+    assert(Option.sequence(a) == Some(List(1, 2)))
+    val b = List(Some(1), None)
+    assert(Option.sequence(b) == None)
+  }
+
+  it should "EXERCIZE 4.4 sequence_1" in {
+    val a = List(Some(1), Some(2))
+    assert(Option.sequence_1(a) == Some(List(1, 2)))
+    val b = List(Some(1), None)
+    assert(Option.sequence_1(b) == None)
+  }
 }

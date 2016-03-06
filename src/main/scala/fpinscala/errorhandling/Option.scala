@@ -71,4 +71,15 @@ object Option {
 
   def map2_1[X, Y, Z](a: Option[X], b: Option[Y])(f: (X, Y) => Z): Option[Z] =
     a.flatMap(aa => b.map(bb => f(aa, bb)))
+
+  /** EXERCIZE 4.4 */
+  def sequence[A](a: List[Option[A]]): Option[List[A]] =
+    a match {
+      case h :: t => h.flatMap(hh => sequence(t).map(tt => hh :: tt))
+      case Nil => Some(Nil)
+    }
+
+  def sequence_1[A](a: List[Option[A]]): Option[List[A]] =
+    a.foldRight[Option[List[A]]](Some(Nil))((x, y) => map2(x, y)(_ :: _))
+
 }
