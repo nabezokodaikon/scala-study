@@ -77,4 +77,16 @@ class OptionSpec extends FlatSpec {
     val b = List(Some(1), None)
     assert(Option.sequence_1(b) == None)
   }
+
+  it should "EXERCIZE 4.5 traverse" in {
+    val l = List("1", "2", "3")
+    val r = Option.traverse(l)(i => Option.Try { i.toInt })
+    assert(r == Some(List(1, 2, 3)))
+  }
+
+  it should "EXERCIZE 4.5 traverse_1" in {
+    val l = List("1", "2", "3")
+    val r = Option.traverse_1(l)(i => Option.Try { i.toInt })
+    assert(r == Some(List(1, 2, 3)))
+  }
 }
