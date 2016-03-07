@@ -59,4 +59,18 @@ class EitherSpec extends FlatSpec {
     assert(r1 == Right(50.0))
     assert(r1 == r2)
   }
+
+  it should "EXERCIZE 4.7 traverse" in {
+    val as = List("1", "2", "3")
+    val ar = Either.traverse(as)(a => Either.Try(a.toInt))
+    assert(ar == Right(List(1, 2, 3)))
+    val bs = List("1", "a", "b")
+    val br = Either.traverse(bs)(a => Either.Try(a.toInt))
+    assert {
+      br match {
+        case Left(e) => true
+        case _ => false
+      }
+    }
+  }
 }
