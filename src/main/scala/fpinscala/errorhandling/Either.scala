@@ -63,10 +63,7 @@ object Either {
       case (h :: t) => (f(h).map2(traverse(t)(f)))(_ :: _)
     }
 
-  // def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] =
-  // es match {
-  // case Nil => Left(Nil)
-  // case (h :: t) => kkkk
-  // }
-
+  /** EXERCIZE 4.7 */
+  def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] =
+    traverse(es)(x => x)
 }

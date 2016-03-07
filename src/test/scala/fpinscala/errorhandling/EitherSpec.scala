@@ -73,4 +73,18 @@ class EitherSpec extends FlatSpec {
       }
     }
   }
+
+  it should "EXERCIZE 4.7 sequence" in {
+    val as = List(Right(1), Right(2), Right(3))
+    val ar = Either.sequence(as)
+    assert(ar == Right(List(1, 2, 3)))
+    val bs = List(Right(1), Left(new Exception("error")), Right(3))
+    val br = Either.sequence(bs)
+    assert {
+      br match {
+        case Left(e) => true
+        case _ => false
+      }
+    }
+  }
 }
