@@ -1,6 +1,7 @@
 package fpinscala.laziness
 
 trait Stream[+A] {
+  import Stream._
 
   def headOption: Option[A] = this match {
     case Empty => None
@@ -11,6 +12,17 @@ trait Stream[+A] {
   def toList: List[A] = this match {
     case Empty => Nil
     case Cons(h, t) => h() :: t().toList
+  }
+
+  /**
+   * EXERCIZE 5.2
+   *
+   * Stream の先頭から n 個の要素を取り出す。
+   */
+  def take(n: Int): Stream[A] = this match {
+    case Cons(h, t) if n > 1 => cons(h(), t().take(n - 1))
+    case Cons(h, t) if n == 1 => cons(h(), empty)
+    case _ => empty
   }
 }
 
