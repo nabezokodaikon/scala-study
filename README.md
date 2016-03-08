@@ -53,6 +53,29 @@ def mean(xs: Seq[Double]): Double = {
 #### 非正確関数
 引数の1つ以上を評価しない関数。
 
+#### サンク(thunk)
+評価されない形式の式。
+```
+def if2[A](cond: Boolean, onTrue: () => A, onFalse: () => A): A =
+   if (cond) onTrue() else onFalse()
+
+if2 (a < 22,
+   () => println("a"),
+   () => println("b")
+)
+```
+よく利用するので、以下のように省略できる。
+```
+def if2[A](cond: Boolean, onTrue: => A, onFalse: => A): A =
+   if (cond) onTrue else onFalse
+
+if2 (a < 22,
+   println("a"),
+   println("b")
+)
+```
+
+
 
 ### Tips
 #### :paste
