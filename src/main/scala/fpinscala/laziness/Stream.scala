@@ -6,6 +6,12 @@ trait Stream[+A] {
     case Empty => None
     case Cons(h, t) => Some(h())
   }
+
+  /** EXERCIZE 5.1 */
+  def toList: List[A] = this match {
+    case Empty => Nil
+    case Cons(h, t) => h() :: t().toList
+  }
 }
 
 case object Empty extends Stream[Nothing]
