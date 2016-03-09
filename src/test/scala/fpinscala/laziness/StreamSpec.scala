@@ -29,7 +29,13 @@ class StreamSpec extends FlatSpec {
   }
 
   it should "EXERCIZE 5.3 takeWhile" in {
-    val a = Stream(1, 2, 3, 4).takeWhile(_ % 2 == 0).toList
-    assert(a == List(2, 4))
+    val a = Stream(1, 2, 3, 4).takeWhile(_ < 3).toList
+    assert(a == List(1, 2))
+  }
+
+  it should "EXERCIZE 5.4 forAll" in {
+    val a = Stream(1, 2, 3).forAll(
+      i => { println(s"hello${i}"); i < 2 })
+    assert(a == false)
   }
 }

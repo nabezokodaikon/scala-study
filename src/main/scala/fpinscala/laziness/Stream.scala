@@ -65,6 +65,14 @@ trait Stream[+A] {
       case Cons(h, t) => f(h(), t().foldRight(z)(f))
       case _ => z
     }
+
+  /**
+   * EXERCIZE 5.4
+   * 指定された述語とマッチするもの全てをチェックする。
+   * マッチしない値が検出された時点でチェックを終了する。
+   */
+  def forAll(p: A => Boolean): Boolean =
+    foldRight(true)((a, b) => p(a) && b)
 }
 
 case object Empty extends Stream[Nothing]
