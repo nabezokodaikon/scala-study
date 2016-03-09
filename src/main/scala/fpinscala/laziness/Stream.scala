@@ -24,6 +24,18 @@ trait Stream[+A] {
     case Cons(h, t) if n == 1 => cons(h(), empty)
     case _ => empty
   }
+
+  /**
+   * EXERCIZE 5.2
+   *
+   * Stream の先頭からn個の要素をスキップする。
+   */
+  @annotation.tailrec
+  final def drop(n: Int): Stream[A] = this match {
+    case Cons(h, t) if n > 0 => t().drop(n - 1)
+    case _ => this
+  }
+
 }
 
 case object Empty extends Stream[Nothing]
