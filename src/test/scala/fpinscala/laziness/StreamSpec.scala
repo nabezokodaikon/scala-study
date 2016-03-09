@@ -27,4 +27,9 @@ class StreamSpec extends FlatSpec {
     val a = Stream(1, 2, 3).drop(2).toList
     assert(a == List(3))
   }
+
+  it should "EXERCIZE 5.3 takeWhile" in {
+    val a = Stream(1, 2, 3, 4).takeWhile(_ % 2 == 0).toList
+    assert(a == List(2, 4))
+  }
 }
