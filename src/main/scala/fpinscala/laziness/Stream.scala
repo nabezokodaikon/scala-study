@@ -46,6 +46,13 @@ trait Stream[+A] {
     case _ => empty
   }
 
+  /**
+   * Boolean 関数とマッチする要素がこの Stream に存在するかどうかをチェックします。
+   */
+  def exists(p: A => Boolean): Boolean = this match {
+    case Cons(h, t) => p(h()) || t().exists(p)
+    case _ => false
+  }
 }
 
 case object Empty extends Stream[Nothing]
