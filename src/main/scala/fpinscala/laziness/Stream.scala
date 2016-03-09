@@ -54,6 +54,9 @@ trait Stream[+A] {
     case _ => false
   }
 
+  def exists_1(p: A => Boolean): Boolean =
+    foldRight(false)((a, b) => p(a) || b)
+
   /**
    * 汎用的な再帰関数
    */
