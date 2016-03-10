@@ -85,6 +85,40 @@ trait Stream[+A] {
       else empty
     )
 
+  /**
+   * EXERCIZE 5.6
+   *
+   * foldRight を使用して Stream の先頭の要素を取り出す。
+   */
+  def headOptionViaFoldRight: Option[A] =
+    foldRight(None: Option[A])((h, _) => Some(h))
+
+  /**
+   * EXERCIZE 5.7
+   */
+  def map[B](f: A => B): Stream[B] =
+    foldRight(empty[B])((h, t) => cons(f(h), t))
+
+  /**
+   * EXERCIZE 5.7
+   */
+  def filter(f: A => Boolean): Stream[A] =
+    foldRight(empty[A])((h, t) =>
+      if (f(h)) cons(h, t)
+      else t
+    )
+
+  /**
+   * EXERCIZE 5.7
+   */
+  def append[B >: A](s: Stream[B]): Stream[B] =
+    foldRight(s)((h, t) => cons(h, t))
+
+  /**
+   * EXERCIZE 5.7
+   */
+  def flatMap[B](f: A => Stream[B]): Stream[B] =
+    foldRight(empty[B])((h, t) => f(h).append(t))
 }
 
 case object Empty extends Stream[Nothing]

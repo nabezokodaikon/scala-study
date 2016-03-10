@@ -43,4 +43,34 @@ class StreamSpec extends FlatSpec {
     val a = Stream(1, 2, 3, 4).takeWhileViaFoldRight(_ < 3).toList
     assert(a == List(1, 2))
   }
+
+  it should "EXERCIZE 5.6 headOptionViaFoldRight" in {
+    val a = Stream(1, 2, 3, 4).headOptionViaFoldRight
+    assert(a == Some(1))
+    val b = Stream().headOptionViaFoldRight
+    assert(b == None)
+  }
+
+  it should "EXERCIZE 5.7 map" in {
+    val a = Stream(1, 2, 3, 4)
+    val b = a.map(_.toString).toList
+    assert(b == List("1", "2", "3", "4"))
+  }
+
+  it should "EXERCIZE 5.7 filter" in {
+    val a = Stream(1, 2, 3, 4)
+    val b = a.filter(i => i % 2 == 0).toList
+    assert(b == List(2, 4))
+  }
+
+  it should "EXERCIZE 5.7 append" in {
+    val a = Stream(1, 2).append(Stream(3, 4)).toList
+    assert(a == List(1, 2, 3, 4))
+  }
+
+  it should "EXERCISE 5.7 flatMap" in {
+    val a = Stream(1, 2, 3).flatMap(i => Stream(i, i)).toList
+    assert(a == List(1, 1, 2, 2, 3, 3))
+  }
+
 }
