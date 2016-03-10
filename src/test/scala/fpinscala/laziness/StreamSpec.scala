@@ -73,4 +73,38 @@ class StreamSpec extends FlatSpec {
     assert(a == List(1, 1, 2, 2, 3, 3))
   }
 
+  it should "トレース" in {
+    val s = Stream(
+      { () => println(s"Stream${1}"); 1 },
+      { () => println(s"Stream${2}"); 2 },
+      { () => println(s"Stream${3}"); 3 },
+      { () => println(s"Stream${4}"); 4 }
+    ).map(i => {
+        println(s"map${i}")
+        i() + 10
+      }
+      ).filter(i => {
+        println(s"filter${i}")
+        i % 2 == 0
+      }
+      )
+    println(s"StreamResult${s}")
+
+    val l = List(
+      { () => println(s"List${1}"); 1 },
+      { () => println(s"List${2}"); 2 },
+      { () => println(s"List${3}"); 3 },
+      { () => println(s"List${4}"); 4 }
+    ).map(i => {
+        println(s"map${i}")
+        i() + 10
+      }
+      ).filter(i => {
+        println(s"filter${i}")
+        i % 2 == 0
+      }
+      )
+    println(s"ListResult${l}")
+  }
+
 }
