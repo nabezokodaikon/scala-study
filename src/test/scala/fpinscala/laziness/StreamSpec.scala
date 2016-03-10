@@ -38,4 +38,9 @@ class StreamSpec extends FlatSpec {
       i => { println(s"hello${i}"); i < 2 })
     assert(a == false)
   }
+
+  it should "EXERCIZE 5.5 takeWhileViaFoldRight" in {
+    val a = Stream(1, 2, 3, 4).takeWhileViaFoldRight(_ < 3).toList
+    assert(a == List(1, 2))
+  }
 }

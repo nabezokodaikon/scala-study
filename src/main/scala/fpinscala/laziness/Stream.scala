@@ -73,6 +73,18 @@ trait Stream[+A] {
    */
   def forAll(p: A => Boolean): Boolean =
     foldRight(true)((a, b) => p(a) && b)
+
+  /**
+   * EXERCIZE 5.5
+   *
+   * foldRight を使用して Stream の先頭から指定された述語とマッチする要素を全て取り出す。
+   */
+  def takeWhileViaFoldRight(p: A => Boolean): Stream[A] =
+    foldRight(empty[A])((a, b) =>
+      if (p(a)) cons(a, b)
+      else empty
+    )
+
 }
 
 case object Empty extends Stream[Nothing]
