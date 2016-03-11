@@ -152,4 +152,11 @@ object Stream {
     lazy val t: Stream[A] = Cons(() => a, () => t)
     t
   }
+
+  /**
+   * EXERCISE 5.9
+   * n で始まって n + 1, n + 2 と続く整数の無限ストリームを生成する。
+   */
+  def from(n: Int): Stream[Int] =
+    cons(n, from(n + 1))
 }

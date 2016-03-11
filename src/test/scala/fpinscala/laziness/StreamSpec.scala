@@ -117,4 +117,9 @@ class StreamSpec extends FlatSpec {
     val a = s.find(_() == 2)
     println(s"${a}")
   }
+
+  it should "EXERCISE 5.9 from" in {
+    val a = Stream.from(5)
+    assert(a.take(5).toList == List(5, 6, 7, 8, 9))
+  }
 }
