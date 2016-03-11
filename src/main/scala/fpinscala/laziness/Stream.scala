@@ -159,4 +159,24 @@ object Stream {
    */
   def from(n: Int): Stream[Int] =
     cons(n, from(n + 1))
+
+  /**
+   * EXERCISE 5.10
+   * フィボナッチ数列の無限ストリームを生成する。
+   */
+  def fibs(): Stream[Int] = {
+    def fib(n: Int): Int = n match {
+      case 0 => 0
+      case 1 => 1
+      case _ => fib(n - 2) + fib(n - 1)
+    }
+    from(0).map(fib(_))
+  }
+
+  val fibs_1 = {
+    def go(f0: Int, f1: Int): Stream[Int] = {
+      cons(f0, go(f1, f0 + f1))
+    }
+    go(0, 1)
+  }
 }

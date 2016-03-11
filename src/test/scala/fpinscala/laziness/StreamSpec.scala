@@ -122,4 +122,14 @@ class StreamSpec extends FlatSpec {
     val a = Stream.from(5)
     assert(a.take(5).toList == List(5, 6, 7, 8, 9))
   }
+
+  it should "EXERCISE 5.10 fibs" in {
+    val a = Stream.fibs().take(10).toList
+    assert(a == List(0, 1, 1, 2, 3, 5, 8, 13, 21, 34))
+  }
+
+  it should "EXERCISE 5.10 fibs_1" in {
+    val a = Stream.fibs_1.take(10).toList
+    assert(a == List(0, 1, 1, 2, 3, 5, 8, 13, 21, 34))
+  }
 }
