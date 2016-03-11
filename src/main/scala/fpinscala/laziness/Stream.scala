@@ -8,14 +8,14 @@ trait Stream[+A] {
     case Cons(h, t) => Some(h())
   }
 
-  /** EXERCIZE 5.1 */
+  /** EXERCISE 5.1 */
   def toList: List[A] = this match {
     case Empty => Nil
     case Cons(h, t) => h() :: t().toList
   }
 
   /**
-   * EXERCIZE 5.2
+   * EXERCISE 5.2
    *
    * Stream の先頭から n 個の要素を取り出す。
    */
@@ -26,7 +26,7 @@ trait Stream[+A] {
   }
 
   /**
-   * EXERCIZE 5.2
+   * EXERCISE 5.2
    *
    * Stream の先頭からn個の要素をスキップする。
    */
@@ -37,7 +37,7 @@ trait Stream[+A] {
   }
 
   /**
-   * EXERCIZE 5.3
+   * EXERCISE 5.3
    *
    * Stream の先頭から指定された述語とマッチする要素を全て取り出す。
    */
@@ -67,7 +67,7 @@ trait Stream[+A] {
     }
 
   /**
-   * EXERCIZE 5.4
+   * EXERCISE 5.4
    * 指定された述語とマッチするもの全てをチェックする。
    * マッチしない値が検出された時点でチェックを終了する。
    */
@@ -75,7 +75,7 @@ trait Stream[+A] {
     foldRight(true)((a, b) => p(a) && b)
 
   /**
-   * EXERCIZE 5.5
+   * EXERCISE 5.5
    *
    * foldRight を使用して Stream の先頭から指定された述語とマッチする要素を全て取り出す。
    */
@@ -86,7 +86,7 @@ trait Stream[+A] {
     )
 
   /**
-   * EXERCIZE 5.6
+   * EXERCISE 5.6
    *
    * foldRight を使用して Stream の先頭の要素を取り出す。
    */
@@ -94,13 +94,13 @@ trait Stream[+A] {
     foldRight(None: Option[A])((h, _) => Some(h))
 
   /**
-   * EXERCIZE 5.7
+   * EXERCISE 5.7
    */
   def map[B](f: A => B): Stream[B] =
     foldRight(empty[B])((h, t) => cons(f(h), t))
 
   /**
-   * EXERCIZE 5.7
+   * EXERCISE 5.7
    */
   def filter(f: A => Boolean): Stream[A] =
     foldRight(empty[A])((h, t) =>
@@ -109,13 +109,13 @@ trait Stream[+A] {
     )
 
   /**
-   * EXERCIZE 5.7
+   * EXERCISE 5.7
    */
   def append[B >: A](s: Stream[B]): Stream[B] =
     foldRight(s)((h, t) => cons(h, t))
 
   /**
-   * EXERCIZE 5.7
+   * EXERCISE 5.7
    */
   def flatMap[B](f: A => Stream[B]): Stream[B] =
     foldRight(empty[B])((h, t) => f(h).append(t))
@@ -145,7 +145,7 @@ object Stream {
     else cons(as.head, apply(as.tail: _*))
 
   /**
-   * EXERCIZE 5.8
+   * EXERCISE 5.8
    * 指定された値の無限ストリームを返す。
    */
   def constant[A](a: A): Stream[A] = {
