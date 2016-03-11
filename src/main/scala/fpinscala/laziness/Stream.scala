@@ -179,4 +179,24 @@ object Stream {
     }
     go(0, 1)
   }
+
+  /**
+   * EXERCISE 5.11
+   * 汎用的なストリーム生成関数。
+   *
+   * @param z 初期状態。
+   * @param f ストリームの次の値を生成する関数。
+   * @return ストリーム。
+   */
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] =
+    f(z) match {
+      case Some((h, s)) => cons(h, unfold(s)(f))
+      case _ => empty
+    }
+
+  /**
+   * EXERCISE 5.12
+   */
+  def fromViaUnfold(n: Int): Stream[Int] =
+    unfold(n)(n => Some((n, n + 1)))
 }
