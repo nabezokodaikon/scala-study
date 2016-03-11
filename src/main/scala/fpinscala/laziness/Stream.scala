@@ -143,4 +143,13 @@ object Stream {
   def apply[A](as: A*): Stream[A] =
     if (as.isEmpty) empty
     else cons(as.head, apply(as.tail: _*))
+
+  /**
+   * EXERCIZE 5.8
+   * 指定された値の無限ストリームを返す。
+   */
+  def constant[A](a: A): Stream[A] = {
+    lazy val t: Stream[A] = Cons(() => a, () => t)
+    t
+  }
 }
