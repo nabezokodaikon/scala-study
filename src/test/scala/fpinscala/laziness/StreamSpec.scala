@@ -107,4 +107,14 @@ class StreamSpec extends FlatSpec {
     println(s"ListResult${l}")
   }
 
+  it should "find" in {
+    val s = Stream(
+      { () => println(s"find${1}"); 1 },
+      { () => println(s"find${2}"); 2 },
+      { () => println(s"find${3}"); 3 },
+      { () => println(s"find${4}"); 4 }
+    )
+    val a = s.find(_() == 2)
+    println(s"${a}")
+  }
 }

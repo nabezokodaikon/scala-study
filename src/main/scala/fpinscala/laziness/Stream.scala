@@ -119,6 +119,12 @@ trait Stream[+A] {
    */
   def flatMap[B](f: A => Stream[B]): Stream[B] =
     foldRight(empty[B])((h, t) => f(h).append(t))
+
+  /**
+   * マッチする要素が存在する場合にその最初の要素だけを返す。
+   */
+  def find(p: A => Boolean): Option[A] =
+    filter(p).headOption
 }
 
 case object Empty extends Stream[Nothing]
