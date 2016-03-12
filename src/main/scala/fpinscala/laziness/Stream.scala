@@ -197,6 +197,12 @@ object Stream {
   /**
    * EXERCISE 5.12
    */
+  val fibsViaUnfold =
+    unfold((0, 1))(n => Some((n._1, (n._2, n._1 + n._2))))
+
+  /**
+   * EXERCISE 5.12
+   */
   def fromViaUnfold(n: Int): Stream[Int] =
     unfold(n)(n => Some((n, n + 1)))
 }
