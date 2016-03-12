@@ -125,6 +125,69 @@ trait Stream[+A] {
    */
   def find(p: A => Boolean): Option[A] =
     filter(p).headOption
+
+  /**
+   * EXERCISE 5.13
+   */
+  def mapViaUnfold[B](f: A => B): Stream[B] =
+    unfold(this) {
+      case Cons(h, t) => Some((f(h()), t()))
+      case _ => None
+    }
+
+  /**
+   * EXERCISE 5.13
+   */
+  def takeViaUnfold(n: Int): Stream[A] =
+    unfold((n, this)) {
+      case (1, Cons(h, t)) => Some((h(), (0, empty)))
+      case (n, Cons(h, t)) if n > 1 => Some((h(), (n - 1, t())))
+      case _ => None
+    }
+
+  /**
+   * EXERCISE 5.13
+   */
+  def takeWhileViaUnfold(p: A => Boolean): Stream[A] =
+    unfold(this) {
+      case Cons(h, t) if p(h()) => Some((h(), t()))
+      case _ => None
+    }
+
+  /**
+   * EXERCISE 5.13
+   * 対応する要素同士を足し合わせて新しい Stream を生成する。
+   */
+  def zipWith[B >: A](s: Stream[B])(f: (B, B) => B): Stream[B] =
+    unfold((this, s)) {
+      case (Cons(h1, t1), Cons(h2, t2)) =>
+        Some((f(h1(), h2()), (t1(), t2())))
+      case _ => None
+    }
+
+  /**
+   * EXERCISE 5.13
+   * 対応する要素同士をタプルにして返す。
+   * どちらかの Stream に要素が残っている限り、評価を続ける。
+   */
+  def zipAll[B](s: Stream[B]): Stream[(Option[A], Option[B])] =
+    unfold((this, s)) {
+      case (Cons(h1, t1), Cons(h2, t2)) => Some(((Some(h1()), Some(h2())), (t1(), t2())))
+      case (Empty, Cons(h2, t2)) => Some(((None, Some(h2())), (empty, t2())))
+      case (Cons(h1, t1), Empty) => Some(((Some(h1()), None), (t1(), empty)))
+      case _ => None
+    }
+
+  def zipAll_1[B](s2: Stream[B]): Stream[(Option[A], Option[B])] =
+    zipWithAll(s2)((_, _))
+
+  def zipWithAll[B, C](s2: Stream[B])(f: (Option[A], Option[B]) => C): Stream[C] =
+    Stream.unfold((this, s2)) {
+      case (Empty, Empty) => None
+      case (Cons(h, t), Empty) => Some(f(Some(h()), Option.empty[B]) -> (t(), empty[B]))
+      case (Empty, Cons(h, t)) => Some(f(Option.empty[A], Some(h())) -> (empty[A] -> t()))
+      case (Cons(h1, t1), Cons(h2, t2)) => Some(f(Some(h1()), Some(h2())) -> (t1() -> t2()))
+    }
 }
 
 case object Empty extends Stream[Nothing]
@@ -214,4 +277,5 @@ object Stream {
    */
   def constantViaUnfold[A](a: A): Stream[A] =
     unfold(a)(_ => Some((a, a)))
+
 }

@@ -147,4 +147,44 @@ class StreamSpec extends FlatSpec {
     val a = Stream.constantViaUnfold("A").take(5).toList
     assert(a == List("A", "A", "A", "A", "A"))
   }
+
+  it should "EXERCISE 5.13 mapViaUnfold" in {
+    val a = Stream(1, 2, 3).map(_.toString).toList
+    assert(a == List("1", "2", "3"))
+  }
+
+  it should "EXERCISE 5.13 takeViaUnfold" in {
+    val a = Stream.fromViaUnfold(5).takeViaUnfold(5).toList
+    assert(a == List(5, 6, 7, 8, 9))
+  }
+
+  it should "EXERCISE 5.13 takeWhileViaUnfold" in {
+    val a = Stream(1, 3, 2, 5).takeWhileViaUnfold(_ % 2 == 1).toList
+    assert(a == List(1, 3))
+  }
+
+  it should "EXERCISE 5.13 zipWith" in {
+    val a = Stream(1, 2, 3)
+    val b = Stream(4, 5, 6)
+    val r = a.zipWith(b)(_ + _)
+    assert(r.toList == List(5, 7, 9))
+  }
+
+  it should "EXERCISE 5.13 zipAll" in {
+    val a = Stream(1, 2, 3).zipAll(Stream("a", "b", "c")).toList
+    assert(a == List((Some(1), Some("a")), (Some(2), Some("b")), (Some(3), Some("c"))))
+    val b = Stream(1, 2).zipAll(Stream("a", "b", "c")).toList
+    assert(b == List((Some(1), Some("a")), (Some(2), Some("b")), (None, Some("c"))))
+    val c = Stream(1, 2, 3).zipAll(Stream("a", "b")).toList
+    assert(c == List((Some(1), Some("a")), (Some(2), Some("b")), (Some(3), None)))
+  }
+
+  it should "EXERCISE 5.13 zipAll_1" in {
+    val a = Stream(1, 2, 3).zipAll_1(Stream("a", "b", "c")).toList
+    assert(a == List((Some(1), Some("a")), (Some(2), Some("b")), (Some(3), Some("c"))))
+    val b = Stream(1, 2).zipAll_1(Stream("a", "b", "c")).toList
+    assert(b == List((Some(1), Some("a")), (Some(2), Some("b")), (None, Some("c"))))
+    val c = Stream(1, 2, 3).zipAll_1(Stream("a", "b")).toList
+    assert(c == List((Some(1), Some("a")), (Some(2), Some("b")), (Some(3), None)))
+  }
 }
