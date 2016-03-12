@@ -205,4 +205,10 @@ object Stream {
    */
   def fromViaUnfold(n: Int): Stream[Int] =
     unfold(n)(n => Some((n, n + 1)))
+
+  /**
+   * EXERCISE 5.12
+   */
+  def constantViaUnfold[A](a: A): Stream[A] =
+    unfold(a)(a => Some((a, a)))
 }

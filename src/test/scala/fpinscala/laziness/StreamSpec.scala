@@ -142,4 +142,9 @@ class StreamSpec extends FlatSpec {
     val a = Stream.fromViaUnfold(5).take(5).toList
     assert(a == List(5, 6, 7, 8, 9))
   }
+
+  it should "EXERCISE 5.12 constantViaUnfold" in {
+    val a = Stream.constantViaUnfold("A").take(5).toList
+    assert(a == List("A", "A", "A", "A", "A"))
+  }
 }
