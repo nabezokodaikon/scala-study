@@ -179,14 +179,14 @@ class StreamSpec extends FlatSpec {
     assert(c == List((Some(1), Some("a")), (Some(2), Some("b")), (Some(3), None)))
   }
 
-  it should "EXERCISE 5.13 zipAll_1" in {
-    val a = Stream(1, 2, 3).zipAll_1(Stream("a", "b", "c")).toList
-    assert(a == List((Some(1), Some("a")), (Some(2), Some("b")), (Some(3), Some("c"))))
-    val b = Stream(1, 2).zipAll_1(Stream("a", "b", "c")).toList
-    assert(b == List((Some(1), Some("a")), (Some(2), Some("b")), (None, Some("c"))))
-    val c = Stream(1, 2, 3).zipAll_1(Stream("a", "b")).toList
-    assert(c == List((Some(1), Some("a")), (Some(2), Some("b")), (Some(3), None)))
-  }
+  // it should "EXERCISE 5.13 zipAll_1" in {
+  // val a = Stream(1, 2, 3).zipAll_1(Stream("a", "b", "c")).toList
+  // assert(a == List((Some(1), Some("a")), (Some(2), Some("b")), (Some(3), Some("c"))))
+  // val b = Stream(1, 2).zipAll_1(Stream("a", "b", "c")).toList
+  // assert(b == List((Some(1), Some("a")), (Some(2), Some("b")), (None, Some("c"))))
+  // val c = Stream(1, 2, 3).zipAll_1(Stream("a", "b")).toList
+  // assert(c == List((Some(1), Some("a")), (Some(2), Some("b")), (Some(3), None)))
+  // }
 
   it should "EXERCISE 5.14 startsWith" in {
     assert(Stream(1, 2, 3).startsWith(Stream(1, 2)) == true)
