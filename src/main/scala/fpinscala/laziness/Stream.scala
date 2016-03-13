@@ -211,8 +211,8 @@ trait Stream[+A] {
   /**
    * 特定のシーケンスが含まれているかどうかをチェックする。
    */
-  // def hasSubsequence(sub: Stream[A]): Boolean =
-  // this.exists(
+  def hasSubsequence[B](sub: Stream[B]): Boolean =
+    this.tails.exists(_.startsWith(sub))
 }
 
 case object Empty extends Stream[Nothing]

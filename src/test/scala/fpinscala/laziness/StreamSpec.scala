@@ -197,4 +197,12 @@ class StreamSpec extends FlatSpec {
     val r = Stream(1, 2, 3).tails.map(_.toList).toList
     assert(r == List(List(1, 2, 3), List(2, 3), List(3), List()))
   }
+
+  it should "hasSubsequence" in {
+    val a = Stream(1, 2, 3, 4, 5)
+    assert(a.hasSubsequence(Stream(1, 2)) == true)
+    assert(a.hasSubsequence(Stream(3, 4, 5)) == true)
+    assert(a.hasSubsequence(Stream(3, 5)) == false)
+    assert(a.hasSubsequence(Empty) == true)
+  }
 }
