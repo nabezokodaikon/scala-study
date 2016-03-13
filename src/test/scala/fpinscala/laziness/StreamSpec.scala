@@ -192,4 +192,9 @@ class StreamSpec extends FlatSpec {
     assert(Stream(1, 2, 3).startsWith(Stream(1, 2)) == true)
     assert(Stream(1, 2, 3).startsWith(Stream(2, 3)) == false)
   }
+
+  it should "EXERCISE 5.15 tails" in {
+    val r = Stream(1, 2, 3).tails.map(_.toList).toList
+    assert(r == List(List(1, 2, 3), List(2, 3), List(3), List()))
+  }
 }

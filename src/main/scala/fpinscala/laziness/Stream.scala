@@ -199,6 +199,16 @@ trait Stream[+A] {
     }
 
   /**
+   * EXERCISE 5.15
+   * 先頭を除いたコレクションを順次返す。
+   */
+  def tails: Stream[Stream[A]] =
+    unfold(this) {
+      case Empty => None
+      case s => Some((s, s.drop(1)))
+    }.append(Stream(empty))
+
+  /**
    * 特定のシーケンスが含まれているかどうかをチェックする。
    */
   // def hasSubsequence(sub: Stream[A]): Boolean =
