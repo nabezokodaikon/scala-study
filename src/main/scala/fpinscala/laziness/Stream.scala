@@ -188,6 +188,21 @@ trait Stream[+A] {
       case (Empty, Cons(h, t)) => Some(f(Option.empty[A], Some(h())) -> (empty[A] -> t()))
       case (Cons(h1, t1), Cons(h2, t2)) => Some(f(Some(h1()), Some(h2())) -> (t1() -> t2()))
     }
+
+  /**
+   * EXERCISE 5.14
+   * Stream が別の Stream のプレフィックスであるかどうかを調べる。
+   */
+  def startsWith[B](s: Stream[B]): Boolean =
+    this.zipAll(s).takeWhile(!_._2.isEmpty).forAll {
+      case (h1, h2) => h1 == h2
+    }
+
+  /**
+   * 特定のシーケンスが含まれているかどうかをチェックする。
+   */
+  // def hasSubsequence(sub: Stream[A]): Boolean =
+  // this.exists(
 }
 
 case object Empty extends Stream[Nothing]
