@@ -213,6 +213,21 @@ trait Stream[+A] {
    */
   def hasSubsequence[B](sub: Stream[B]): Boolean =
     this.tails.exists(_.startsWith(sub))
+
+  /**
+   * EXERCISE 5.16
+   *
+   * tails の一般化関数。
+   * foldRight と同様に、この関数は中間結果を Stream で返す。
+   *
+   * TODO: わからん。
+   */
+  def scanRight[B](z: B)(f: (A, => B) => B): Stream[B] =
+    foldRight((z, Stream(z)))((a, p0) => {
+      lazy val p1 = p0
+      val b2 = f(a, p1._1)
+      (b2, cons(b2, p1._2))
+    })._2
 }
 
 case object Empty extends Stream[Nothing]

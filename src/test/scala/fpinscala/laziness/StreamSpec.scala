@@ -205,4 +205,9 @@ class StreamSpec extends FlatSpec {
     assert(a.hasSubsequence(Stream(3, 5)) == false)
     assert(a.hasSubsequence(Empty) == true)
   }
+
+  it should "EXERCISE 5.16 scalRight" in {
+    val r = Stream(1, 2, 3).scanRight(0)(_ + _).toList
+    assert(r == List(6, 5, 3, 0))
+  }
 }
