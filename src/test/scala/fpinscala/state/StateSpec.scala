@@ -61,4 +61,12 @@ class StateSpec extends FlatSpec {
     assert(d2 != d2a)
     assert(d3 != d3a)
   }
+
+  it should "EXERCIZE 6.4 ints" in {
+    val rng = SimpleRNG(0)
+    val (l1, r1) = rng.ints(3)(rng)
+    val (l2, r2) = rng.ints(3)(r1)
+    assert(l1 == rng.ints(3)(rng)._1)
+    assert(l1 != l2)
+  }
 }

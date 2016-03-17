@@ -60,6 +60,21 @@ trait RNG {
     val (d3, r3) = rng.double(r2)
     ((d1, d2, d3), r3)
   }
+
+  /**
+   * EXERCIZE 6.4
+   *
+   * ランダムな整数リストを生成する。
+   */
+  def ints(count: Int)(rng: RNG): (List[Int], RNG) = {
+    if (count < 1) {
+      (Nil, rng)
+    } else {
+      val (x, r1) = rng.nextInt
+      val (xs, r2) = ints(count - 1)(r1)
+      (x :: xs, r2)
+    }
+  }
 }
 
 case class SimpleRNG(seed: Long) extends RNG {
