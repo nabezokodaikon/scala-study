@@ -14,4 +14,18 @@ case class SimpleRNG(seed: Long) extends RNG {
     (n, nextRNG)
   }
 
+  /**
+   * EXERCIZE 6.1
+   *
+   * 0 〜 Int.maxValue のランダムな整数を生成する。
+   */
+  def nonNegativeInt(rng: RNG): (Int, RNG) = {
+    val (i, r) = rng.nextInt
+    if (i < 0) {
+      (-(i + 1), r)
+    } else {
+      (i, r)
+    }
+  }
+
 }
