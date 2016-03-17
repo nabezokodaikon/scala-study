@@ -16,9 +16,17 @@ class StateSpec extends FlatSpec {
 
   it should "EXERCIZE 6.1 nonNegativeInt" in {
     val rng = SimpleRNG(0)
-    val (n1, rng1) = rng.nextInt
-    val (n2, rng2) = rng1.nextInt
-    assert(n1 == rng.nextInt._1)
-    assert(n2 == rng1.nextInt._1)
+    val (n1, rng1) = rng.nonNegativeInt(rng)
+    val (n2, rng2) = rng.nonNegativeInt(rng1)
+    assert(n1 == rng.nonNegativeInt(rng)._1)
+    assert(n2 == rng.nonNegativeInt(rng1)._1)
+  }
+
+  it should "EXERCIZE 6.2 double" in {
+    val rng = SimpleRNG(0)
+    val (n1, rng1) = rng.double(rng)
+    val (n2, rng2) = rng.double(rng1)
+    assert(n1 == rng.double(rng)._1)
+    assert(n2 == rng.double(rng1)._1)
   }
 }
