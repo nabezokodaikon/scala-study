@@ -85,6 +85,15 @@ trait RNG {
       val (a, rng2) = s(rng)
       (f(a), rng2)
     }
+
+  /**
+   * EXERCIZE 6.5
+   *
+   * 0 〜 1(1 を含まない)の Double 型の値を生成する。
+   */
+  def doubleViaMap(rng: RNG): Rand[Double] = {
+    map(nonNegativeInt)(_ / (Int.MaxValue.toDouble + 1))
+  }
 }
 
 case class SimpleRNG(seed: Long) extends RNG {

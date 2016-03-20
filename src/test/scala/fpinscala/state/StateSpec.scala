@@ -69,4 +69,13 @@ class StateSpec extends FlatSpec {
     assert(l1 == rng.ints(3)(rng)._1)
     assert(l1 != l2)
   }
+
+  it should "EXERCIZE 6.5 doubleViaMap" in {
+    val rng = SimpleRNG(0)
+    val rnd = rng.doubleViaMap(rng)
+    val res1 = rnd(rng)
+    val res2 = rnd(res1._2)
+    assert(res1._1 == rnd(rng)._1)
+    assert(res1._1 != res2._1)
+  }
 }
