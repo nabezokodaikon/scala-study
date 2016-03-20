@@ -94,6 +94,19 @@ trait RNG {
   def doubleViaMap(rng: RNG): Rand[Double] = {
     map(nonNegativeInt)(_ / (Int.MaxValue.toDouble + 1))
   }
+
+  /**
+   * EXERCIZE 6.6
+   *
+   * ra と rb の２つのアクションと、それらの結果を結合する関数 f を受け取り、
+   * それらを結合する新しいアクションを返す。
+   */
+  def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
+    rng => {
+      val (a, r1) = ra(rng)
+      val (b, r2) = rb(r1)
+      (f(a, b), r2)
+    }
 }
 
 case class SimpleRNG(seed: Long) extends RNG {
