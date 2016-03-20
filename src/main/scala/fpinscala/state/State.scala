@@ -113,6 +113,17 @@ trait RNG {
 
   def intDoubleViaBoth: Rand[(Int, Double)] = both(int, double)
   def doubleIntViaBoth: Rand[(Double, Int)] = both(double, int)
+
+  /**
+   * EXERCIZE 6.7
+   *
+   * 遷移の List を1つの遷移にまとめる。
+   */
+  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] =
+    fs.foldRight(unit(List[A]()))((f, acc) => map2(f, acc)((_ :: _)))
+
+  def intsViaSequence(count: Int): Rand[List[Int]] =
+    sequence(List.fill(count)(int))
 }
 
 case class SimpleRNG(seed: Long) extends RNG {
