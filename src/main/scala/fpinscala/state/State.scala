@@ -107,6 +107,12 @@ trait RNG {
       val (b, r2) = rb(r1)
       (f(a, b), r2)
     }
+
+  def both[A, B](ra: Rand[A], rb: Rand[B]): Rand[(A, B)] =
+    map2(ra, rb)((_, _))
+
+  def intDoubleViaBoth: Rand[(Int, Double)] = both(int, double)
+  def doubleIntViaBoth: Rand[(Double, Int)] = both(double, int)
 }
 
 case class SimpleRNG(seed: Long) extends RNG {
