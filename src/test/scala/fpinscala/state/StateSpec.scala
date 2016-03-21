@@ -78,4 +78,12 @@ class StateSpec extends FlatSpec {
     assert(res1._1 == rnd(rng)._1)
     assert(res1._1 != res2._1)
   }
+
+  it should "EXERCIZE 6.9 mapViaFlatMap" in {
+    val rng = SimpleRNG(0)
+    val res1 = rng.mapViaFlatMap(rng.int)(_.toString)(rng)
+    val res2 = rng.mapViaFlatMap(rng.int)(_.toString)(res1._2)
+    assert(res1._1 == rng.mapViaFlatMap(rng.int)(_.toString)(rng)._1)
+    assert(res1._1 != res2._1)
+  }
 }
