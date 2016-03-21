@@ -124,6 +124,26 @@ trait RNG {
 
   def intsViaSequence(count: Int): Rand[List[Int]] =
     sequence(List.fill(count)(int))
+
+  /**
+   * EXERCIZE 6.8
+   */
+  def flatMap[A, B](f: Rand[A])(g: A => Rand[B]): Rand[B] =
+    rng => {
+      val (a, r1) = f(rng)
+      g(a)(r1)
+    }
+
+  /**
+   * 0〜n(0を含み、nを含まない)整数を生成します。
+   */
+  def nonNegativeLessThan(n: Int): Rand[Int] = { rng =>
+    val (i, rng2) = nonNegativeInt(rng)
+    val mod = i % n
+    if (i + (n - 1) - mod >= 0)
+      (mod, rng2)
+    else nonNegativeLessThan(n)(rng)
+  }
 }
 
 case class SimpleRNG(seed: Long) extends RNG {
