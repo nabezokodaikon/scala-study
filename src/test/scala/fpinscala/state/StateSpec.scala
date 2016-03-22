@@ -86,4 +86,12 @@ class StateSpec extends FlatSpec {
     assert(res1._1 == rng.mapViaFlatMap(rng.int)(_.toString)(rng)._1)
     assert(res1._1 != res2._1)
   }
+
+  it should "EXERCIZE 6.11 simulateMachine" in {
+    val m = Machine(true, 5, 10)
+    val r = Candy.simulateMachine(List(Coin, Turn, Coin, Turn, Coin, Turn, Coin, Turn))
+    val s = r.run(m)
+    assert(s._1._1 == 14)
+    assert(s._1._2 == 1)
+  }
 }

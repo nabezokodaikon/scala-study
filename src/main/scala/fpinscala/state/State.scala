@@ -206,3 +206,41 @@ object State {
   def set[S](s: S): State[S, Unit] = State(_ => ((), s))
 
 }
+
+/**
+ * EXERCIZE 6.11
+ */
+sealed trait Input
+case object Coin extends Input
+case object Turn extends Input
+
+case class Machine(locked: Boolean, candies: Int, coins: Int)
+
+object Candy {
+
+  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = {
+    import State._
+    for {
+      // _ <- sequence(inputs.map(i => modify[Machine](s => update(i)(s))))
+      _ <- sequence(inputs.map(modify[Machine] _ compose (update)))
+      s <- get
+    } yield (s.coins, s.candies)
+  }
+
+  def update = (i: Input) => (s: Machine) =>
+    (i, s) match {
+      // スナックが売り切れた自動販売機は、入力をすべて無視する。
+      case (_, Machine(_, 0, _)) => s
+      // ロックが解除された状態で硬貨を投入しても、何も起こらない。
+      case (Coin, Machine(false, _, _)) => s
+      // ロックされた状態でハンドルを回しても、何も起こらない。
+      case (Turn, Machine(true, _, _)) => s
+      // ロックされた状態の自動販売機に硬貨を投入すると、
+      // スナックが残っている場合はロックが解除される。
+      case (Coin, Machine(true, candy, coin)) => Machine(false, candy, coin + 1)
+      // ロックが解除された状態の自動販売機のハンドルを回すと、
+      // スナックが出てきてロックがかかる。
+      case (Turn, Machine(false, candy, coin)) => Machine(true, candy - 1, coin)
+    }
+
+}
