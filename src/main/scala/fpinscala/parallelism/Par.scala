@@ -2,42 +2,6 @@ package fpinscala.parallelism
 
 import java.util.concurrent.TimeUnit
 
-trait Par {
-
-  /**
-   * 直ちにa値が得られる計算を作成。
-   * 定数値を並列計算に昇格させる。
-   */
-  // def unit[A](a: A): Par[A]
-
-  /**
-   * 2つの並列計算の結果を2項関数で結合する。
-   */
-  // def map2[A, B, C](a: => Par[A], b: => Par[B])(f: (A, B) => C): Par[C]
-
-  /**
-   * runによる並列評価の対象としてマーク。
-   * 計算を並列評価の対象としてマークする。
-   * この評価はrunによって強制されるまで実際には発生しない。
-   */
-  // def fork[A](a: => Par[A]): Par[A]
-
-  /**
-   * 式aをrunによる並列評価のためのラッピング。
-   * 評価されていない引数をParでラッピングし、
-   * 並列評価の対象としてマークする。
-   */
-  // def lazyUnit[A](a: => A): Par[A] =
-  // fork(unit(a))
-
-  /**
-   * 与えられたParを完全に評価し、forkによって要求される並列計算を生成し、結果の値を取得。
-   * 実際に計算を行うことで、Parから値を取得する。
-   */
-  // def run[A](a: Par[A]): A
-
-}
-
 class ExecutorService {
   def submit[A](a: Callable[A]): Future[A]
 }
@@ -58,9 +22,36 @@ object Par {
 
   type Par[A] = ExecutorService => Future[A]
 
+  /**
+   * 与えられたParを完全に評価し、forkによって要求される並列計算を生成し、結果の値を取得。
+   * 実際に計算を行うことで、Parから値を取得する。
+   */
   def run[A](s: ExecutorService)(a: Par[A]): Future[A] = a(s)
+
+  /**
+   * 直ちにa値が得られる計算を作成。
+   * 定数値を並列計算に昇格させる。
+   */
   def unit[A](a: A): Par[A] =
     (es: ExecutorService) => UnitFuture(a)
+
+  /**
+   * 式aをrunによる並列評価のためのラッピング。
+   * 評価されていない引数をParでラッピングし、
+   * 並列評価の対象としてマークする。
+   */
+  def lazyUnit[A](a: => A): Par[A] =
+    fork(unit(a))
+
+  /**
+   * runによる並列評価の対象としてマーク。
+   * 計算を並列評価の対象としてマークする。
+   * この評価はrunによって強制されるまで実際には発生しない。
+   */
+  def fork[A](a: => Par[A]): Par[A] =
+    es => es.submit(new Callable[A] {
+      def call = a(es).get
+    })
 
   private case class UnitFuture[A](get: A) extends Future[A] {
     def isDone = true
@@ -69,6 +60,9 @@ object Par {
     def cancel(evenIfRunning: Boolean): Boolean = false
   }
 
+  /**
+   * 2つの並列計算の結果を2項関数で結合する。
+   */
   def map2[A, B, C](a: Par[A], b: Par[B])(f: (A, B) => C): Par[C] =
     (es: ExecutorService) => {
       val af = a(es)
@@ -86,11 +80,21 @@ object Par {
       Map2Future(af, bf, f)
     }
 
-  def fork[A](a: => Par[A]): Par[A] =
-    es => es.submit(new Callable[A] {
-      def call = a(es).get
-    })
+  /**
+   * EXECIZE 7.4
+   *
+   * 任意の関数 A => B から、その結果を非同期で評価する関数へ変換する。
+   */
+  def asyncF[A, B](f: A => B): A => Par[B] =
+    a => lazyUnit[B](f(a))
 
+  def map[A, B](pa: Par[A])(f: A => B): Par[B] =
+    map2(pa, unit(()))((a, _) => f(a))
+
+  def sortPar(parList: Par[List[Int]]): Par[List[Int]] =
+    map(parList)(_.sorted)
+
+  def parMap[A, B](ps: List[A])(f: A => B): Par[List[B]] =
 }
 
 /**
