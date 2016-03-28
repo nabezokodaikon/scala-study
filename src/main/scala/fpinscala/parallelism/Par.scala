@@ -1,22 +1,7 @@
 package fpinscala.parallelism
 
-import java.util.concurrent.TimeUnit
-
-class ExecutorService {
-  def submit[A](a: Callable[A]): Future[A]
-}
-
-trait Callable[A] {
-  def call: A
-}
-
-trait Future[A] {
-  def get: A
-  def get(timeout: Long, unit: TimeUnit): A
-  def cancel(evenIfRunning: Boolean): Boolean
-  def isDone: Boolean
-  def isCancelled: Boolean
-}
+import java.util.concurrent._
+import language.implicitConversions
 
 object Par {
 
@@ -115,6 +100,9 @@ object Par {
     }))
     map(sequence(pars))(_.flatten)
   }
+
+  def equal[A](e: ExecutorService)(p: Par[A], p2: Par[A]): Boolean =
+    p(e).get == p2(e).get
 
 }
 
