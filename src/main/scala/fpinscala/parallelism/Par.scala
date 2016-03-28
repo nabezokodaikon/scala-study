@@ -38,6 +38,9 @@ object Par {
       def call = a(es).get
     })
 
+  def delay[A](fa: => Par[A]): Par[A] =
+    es => fa(es)
+
   private case class UnitFuture[A](get: A) extends Future[A] {
     def isDone = true
     def get(timeout: Long, units: TimeUnit) = get
