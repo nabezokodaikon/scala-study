@@ -107,6 +107,16 @@ object Par {
   def equal[A](e: ExecutorService)(p: Par[A], p2: Par[A]): Boolean =
     p(e).get == p2(e).get
 
+  /**
+   * リスト7-15
+   *
+   * 最初の計算の結果に基づいて、フォークする2つの計算のどちらかを関数に選択させる。
+   * condがtrueになる場合はtを実行し、condがfalseになる場合はfを実行します。
+   */
+  def choice[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] =
+    es =>
+      if (run(es)(cond).get) t(es)
+      else f(es)
 }
 
 /**
