@@ -117,6 +117,15 @@ object Par {
     es =>
       if (run(es)(cond).get) t(es)
       else f(es)
+
+  /**
+   * EXERCISE 7.11
+   */
+  def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] =
+    es => {
+      val ind = run(es)(n).get
+      run(es)(choices(ind))
+    }
 }
 
 /**
