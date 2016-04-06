@@ -138,10 +138,28 @@ object Par {
       val k = run(es)(key).get
       run(es)(choices(k))
     }
+
+  /**
+   * EXERCISE 7.13
+   */
+  def chooser[A, B](pa: Par[A])(choices: A => Par[B]): Par[B] =
+    es => {
+      val a = run(es)(pa).get
+      run(es)(choices(a))
+    }
+
+  // def choiseViaChooser[A](pa: Par[Boolean])(ifTrue: Par[A])(ifFalse: Par[A]): Par[A] =
+  // es => chooser(pa)(a => if (a) ifTrue(es) else ifFalse(es))
+
+  // def choiceNViaChooser[A](pn: Par[Int])(choices: List[Par[A]]): Par[A] =
+  // es => chooser(pn)(n => run(es)(n).get)(choices(_))
+
+  // def choiceMapViaChooser[K, V](key: Par[K])(choices: Map[K, Par[V]]): Par[V] =
+  // es => chooser(key)(k => run(es)(choices(k)))
 }
 
 /**
- * EXECIZE 7.3
+ * EXERCIZE 7.3
  */
 case class Map2Future[A, B, C](
     a: Future[A], b: Future[B], f: (A, B) => C) extends Future[C] {
