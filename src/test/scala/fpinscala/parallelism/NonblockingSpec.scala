@@ -4,7 +4,7 @@ import org.scalatest.FlatSpec
 
 class NonblockingSpec extends FlatSpec {
 
-  behavio of "Nonblocking テスト"
+  behavior of "Nonblocking テスト"
 
   it should "Example" in {
   }
