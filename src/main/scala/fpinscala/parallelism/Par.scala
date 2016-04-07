@@ -165,6 +165,13 @@ object Par {
       val a = run(es)(p).get
       run(es)(f(a))
     }
+
+  def joinViaFlatMap[A](a: Par[Par[A]]): Par[A] =
+    flatMap(a)(x => x)
+
+  def join[A](a: Par[Par[A]]): Par[A] =
+    es => run(es)(run(es)(a).get())
+
 }
 
 /**
