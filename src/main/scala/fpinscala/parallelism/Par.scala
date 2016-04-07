@@ -156,6 +156,15 @@ object Par {
 
   def choiceMapViaChooser[K, V](key: Par[K])(choices: Map[K, Par[V]]): Par[V] =
     chooser(key)(k => choices(k))
+
+  /**
+   * EXERCIZE 7.14
+   */
+  def flatMap[A, B](p: Par[A])(f: A => Par[B]): Par[B] =
+    es => {
+      val a = run(es)(p).get
+      run(es)(f(a))
+    }
 }
 
 /**
