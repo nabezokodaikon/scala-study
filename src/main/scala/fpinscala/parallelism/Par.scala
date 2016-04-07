@@ -148,14 +148,14 @@ object Par {
       run(es)(choices(a))
     }
 
-  // def choiseViaChooser[A](pa: Par[Boolean])(ifTrue: Par[A])(ifFalse: Par[A]): Par[A] =
-  // es => chooser(pa)(a => if (a) ifTrue(es) else ifFalse(es))
+  def choiseViaChooser[A](pa: Par[Boolean])(ifTrue: Par[A])(ifFalse: Par[A]): Par[A] =
+    chooser(pa)(a => if (a) ifTrue else ifFalse)
 
-  // def choiceNViaChooser[A](pn: Par[Int])(choices: List[Par[A]]): Par[A] =
-  // es => chooser(pn)(n => run(es)(n).get)(choices(_))
+  def choiceNViaChooser[A](pn: Par[Int])(choices: List[Par[A]]): Par[A] =
+    chooser(pn)(n => choices(n))
 
-  // def choiceMapViaChooser[K, V](key: Par[K])(choices: Map[K, Par[V]]): Par[V] =
-  // es => chooser(key)(k => run(es)(choices(k)))
+  def choiceMapViaChooser[K, V](key: Par[K])(choices: Map[K, Par[V]]): Par[V] =
+    chooser(key)(k => choices(k))
 }
 
 /**
