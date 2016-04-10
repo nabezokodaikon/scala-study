@@ -21,4 +21,8 @@ object ScalaCheckQuickExample extends Properties("String") {
     l1.size + l2.size == (l1 ::: l2).size
   }
 
+  val intList = org.scalacheck.Gen.listOf(org.scalacheck.Gen.choose(0, 100))
+  property("example") = forAll(intList) { ns =>
+    ns.reverse.reverse == ns
+  }
 }
