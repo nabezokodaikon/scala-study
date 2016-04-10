@@ -25,4 +25,8 @@ object ScalaCheckQuickExample extends Properties("String") {
   property("prop") = forAll(intList) { ns =>
     ns.reverse.reverse == ns
   }
+
+  property("fileingProp") = forAll(intList) { ns =>
+    ns.reverse == ns
+  }
 }
