@@ -22,7 +22,7 @@ object ScalaCheckQuickExample extends Properties("String") {
   }
 
   val intList = org.scalacheck.Gen.listOf(org.scalacheck.Gen.choose(0, 100))
-  property("example") = forAll(intList) { ns =>
+  property("prop") = forAll(intList) { ns =>
     ns.reverse.reverse == ns
   }
 }
