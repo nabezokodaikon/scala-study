@@ -23,6 +23,21 @@ trait Prop {
 // def forAll(a: Gen[A])(f: A => Boolean): Prop
 // }
 
-case class Gen[A](ample: State[RNG, A]) {
+case class Gen[+A](sample: State[RNG, A]) {
+
+}
+
+object Gen {
+
+  /**
+   * EXERCIZE 8.4
+   *
+   * startからstopExclusiveの範囲内の整数を生成する。
+   */
+  def choose(start: Int, stopExclusive: Int): Gen[Int] = {
+    val rng = SimpleRNG(0)
+    Gen(State(rng.nonNegativeInt).map(n => start + n % (stopExclusive - start)))
+  }
+
 }
 
