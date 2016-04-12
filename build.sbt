@@ -1,7 +1,7 @@
 lazy val commonSettings = Seq(
   organization := "com.github.nabezokodaikon",
   version := "0.0.1",
-  scalaVersion := "2.11.7",
+  scalaVersion := "2.11.8",
   scalacOptions ++= Seq(
     "-deprecation",
     "-feature",
@@ -27,12 +27,13 @@ lazy val root = (project.in(file(".")))
     libraryDependencies ++= {
       Seq(
         // Test
-        "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test",
-        "org.scalacheck" %% "scalacheck" % "1.12.5" % "test",
+        "org.scalactic" %% "scalactic" % "3.0.0-M15",
+        "org.scalatest" %% "scalatest" % "3.0.0-M15" % "test",
+        "org.scalacheck" %% "scalacheck" % "1.13.0" % "test",
 
         // Logger
-        "com.typesafe.scala-logging" % "scala-logging_2.11" % "3.1.0",
-        "ch.qos.logback" % "logback-classic" % "1.1.3"
+        "ch.qos.logback" % "logback-classic" % "1.1.7",
+        "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0"
       )
     }
   )

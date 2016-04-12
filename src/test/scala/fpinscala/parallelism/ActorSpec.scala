@@ -4,7 +4,7 @@ import org.scalatest.FlatSpec
 
 class ActorSpec extends FlatSpec {
 
-  behavio of "Actor テスト"
+  behavior of "Actor テスト"
 
   it should "Example" in {
 

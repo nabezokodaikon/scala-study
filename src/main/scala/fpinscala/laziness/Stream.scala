@@ -82,8 +82,7 @@ trait Stream[+A] {
   def takeWhileViaFoldRight(p: A => Boolean): Stream[A] =
     foldRight(empty[A])((a, b) =>
       if (p(a)) cons(a, b)
-      else empty
-    )
+      else empty)
 
   /**
    * EXERCISE 5.6
@@ -105,8 +104,7 @@ trait Stream[+A] {
   def filter(f: A => Boolean): Stream[A] =
     foldRight(empty[A])((h, t) =>
       if (f(h)) cons(h, t)
-      else t
-    )
+      else t)
 
   /**
    * EXERCISE 5.7

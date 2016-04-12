@@ -178,7 +178,8 @@ object Par {
  * EXERCIZE 7.3
  */
 case class Map2Future[A, B, C](
-    a: Future[A], b: Future[B], f: (A, B) => C) extends Future[C] {
+    a: Future[A], b: Future[B], f: (A, B) => C
+) extends Future[C] {
 
   @volatile
   var cache: Option[C] = None

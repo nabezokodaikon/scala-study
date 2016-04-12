@@ -35,7 +35,8 @@ class StreamSpec extends FlatSpec {
 
   it should "EXERCISE 5.4 forAll" in {
     val a = Stream(1, 2, 3).forAll(
-      i => { println(s"hello${i}"); i < 2 })
+      i => { println(s"hello${i}"); i < 2 }
+    )
     assert(a == false)
   }
 
@@ -82,12 +83,10 @@ class StreamSpec extends FlatSpec {
     ).map(i => {
         println(s"map${i}")
         i() + 10
-      }
-      ).filter(i => {
+      }).filter(i => {
         println(s"filter${i}")
         i % 2 == 0
-      }
-      )
+      })
     println(s"StreamResult${s}")
 
     val l = List(
@@ -98,12 +97,10 @@ class StreamSpec extends FlatSpec {
     ).map(i => {
         println(s"map${i}")
         i() + 10
-      }
-      ).filter(i => {
+      }).filter(i => {
         println(s"filter${i}")
         i % 2 == 0
-      }
-      )
+      })
     println(s"ListResult${l}")
   }
 
