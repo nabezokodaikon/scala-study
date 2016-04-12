@@ -43,6 +43,27 @@ object RNG {
     (i / (Int.MaxValue.toDouble + 1), r)
   }
 
+  /**
+   * EXERCISE 6.3
+   */
+  def intDouble(rng: RNG): ((Int, Double), RNG) = {
+    val (i, r1) = rng.nextInt
+    val (d, r2) = double(r1)
+    ((i, d), r2)
+  }
+
+  def doubleInt(rng: RNG): ((Double, Int), RNG) = {
+    val ((i, d), r) = intDouble(rng)
+    ((d, i), r)
+  }
+
+  def double3(rng: RNG): ((Double, Double, Double), RNG) = {
+    val (d1, r1) = double(rng)
+    val (d2, r2) = double(r1)
+    val (d3, r3) = double(r2)
+    ((d1, d2, d3), r3)
+  }
+
   type Rand[+A] = RNG => (A, RNG)
 
   val int: Rand[Int] = _.nextInt
@@ -55,12 +76,6 @@ object RNG {
       val (a, rng2) = s(rng)
       (f(a), rng2)
     }
-
-  // def intDouble(rng: RNG): ((Int,Double), RNG) = ???
-
-  // def doubleInt(rng: RNG): ((Double,Int), RNG) = ???
-
-  // def double3(rng: RNG): ((Double,Double,Double), RNG) = ???
 
   // def ints(count: Int)(rng: RNG): (List[Int], RNG) = ???
 
