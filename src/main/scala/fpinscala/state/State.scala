@@ -79,8 +79,16 @@ object RNG {
     go(count, rng, List())
   }
 
+  /**
+   * リスト 6-4
+   *
+   * 状態アクションデータ型であるRNGの型エイリアス。
+   */
   type Rand[+A] = RNG => (A, RNG)
 
+  /**
+   * リスト 6-5
+   */
   val int: Rand[Int] = _.nextInt
 
   def unit[A](a: A): Rand[A] =
