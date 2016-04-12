@@ -23,9 +23,9 @@ trait Prop {
 // def forAll(a: Gen[A])(f: A => Boolean): Prop
 // }
 
-case class Gen[+A](sample: State[RNG, A]) {
+// case class Gen[+A](sample: State[RNG, A]) {
 
-}
+// }
 
 object Gen {
 
