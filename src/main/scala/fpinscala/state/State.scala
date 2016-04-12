@@ -64,6 +64,21 @@ object RNG {
     ((d1, d2, d3), r3)
   }
 
+  /**
+   * EXERCISE 6.4
+   */
+  def ints(count: Int)(rng: RNG): (List[Int], RNG) = {
+    def go(c: Int, r: RNG, xs: List[Int]): (List[Int], RNG) = {
+      if (c <= 0) {
+        (xs, r)
+      } else {
+        val (x, r2) = r.nextInt
+        go(c - 1, r2, x :: xs)
+      }
+    }
+    go(count, rng, List())
+  }
+
   type Rand[+A] = RNG => (A, RNG)
 
   val int: Rand[Int] = _.nextInt
@@ -76,8 +91,6 @@ object RNG {
       val (a, rng2) = s(rng)
       (f(a), rng2)
     }
-
-  // def ints(count: Int)(rng: RNG): (List[Int], RNG) = ???
 
   // def map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = ???
 
