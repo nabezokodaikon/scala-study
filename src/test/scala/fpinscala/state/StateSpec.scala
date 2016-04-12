@@ -18,4 +18,14 @@ class StateSpec extends FlatSpec {
     assert(a2 != c2)
   }
 
+  it should "EXERCISE 6.1 nonNegativeInt" in {
+    import RNG._
+    val rng = SimpleRNG(42)
+    val (i1, rng2) = nonNegativeInt(rng)
+    val (i2, _) = nonNegativeInt(rng)
+    val (i3, _) = nonNegativeInt(rng2)
+    assert(i1 == i2)
+    assert(i1 != i3)
+  }
+
 }

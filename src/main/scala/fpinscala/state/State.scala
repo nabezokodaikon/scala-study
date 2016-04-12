@@ -27,6 +27,14 @@ object RNG {
     ((i1, i2), rng3)
   }
 
+  /**
+   * EXERCISE 6.1
+   */
+  def nonNegativeInt(rng: RNG): (Int, RNG) = {
+    val (i, r) = rng.nextInt
+    (if (i < 0) -(i + 1) else i, r)
+  }
+
   type Rand[+A] = RNG => (A, RNG)
 
   val int: Rand[Int] = _.nextInt
@@ -39,8 +47,6 @@ object RNG {
       val (a, rng2) = s(rng)
       (f(a), rng2)
     }
-
-  // def nonNegativeInt(rng: RNG): (Int, RNG) = ???
 
   // def double(rng: RNG): (Double, RNG) = ???
 
