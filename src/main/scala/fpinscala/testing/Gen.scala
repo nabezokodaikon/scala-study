@@ -36,20 +36,19 @@ object Gen {
    * startからstopExclusiveの範囲内の整数を生成する。
    */
   // def choose(start: Int, stopExclusive: Int): Gen[Int] = {
-    // val rng = SimpleRNG(0)
-    // Gen(State(rng.nonNegativeInt).map(n => start + n % (stopExclusive - start)))
+  // val rng = SimpleRNG(0)
+  // Gen(State(rng.nonNegativeInt).map(n => start + n % (stopExclusive - start)))
   // }
 
   /**
    * EXERCIZE 8.5
    */
   // def unit[A](a: => A): Gen[A] =
-    // Gen(State.unit(a))
+  // Gen(State.unit(a))
 
   // def boolean: Gen[Boolean] =
 
   // def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] =
-
 
 }
 
