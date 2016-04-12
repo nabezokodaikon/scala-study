@@ -35,6 +35,14 @@ object RNG {
     (if (i < 0) -(i + 1) else i, r)
   }
 
+  /**
+   * EXERCISE 6.2
+   */
+  def double(rng: RNG): (Double, RNG) = {
+    val (i, r) = nonNegativeInt(rng)
+    (i / (Int.MaxValue.toDouble + 1), r)
+  }
+
   type Rand[+A] = RNG => (A, RNG)
 
   val int: Rand[Int] = _.nextInt
@@ -47,8 +55,6 @@ object RNG {
       val (a, rng2) = s(rng)
       (f(a), rng2)
     }
-
-  // def double(rng: RNG): (Double, RNG) = ???
 
   // def intDouble(rng: RNG): ((Int,Double), RNG) = ???
 
