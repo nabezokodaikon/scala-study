@@ -91,14 +91,24 @@ object RNG {
    */
   val int: Rand[Int] = _.nextInt
 
+  /**
+   * リスト 6-6
+   */
   def unit[A](a: A): Rand[A] =
     rng => (a, rng)
 
+  /**
+   * リスト 6-7
+   */
   def map[A, B](s: Rand[A])(f: A => B): Rand[B] =
     rng => {
       val (a, rng2) = s(rng)
       (f(a), rng2)
     }
+
+  // 2で割り切れる0以上のIntを生成します。
+  def nonNegativeEven: Rand[Int] =
+    map(nonNegativeInt)(i => i - i % 2)
 
   // def map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = ???
 
