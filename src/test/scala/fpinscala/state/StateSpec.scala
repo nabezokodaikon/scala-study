@@ -50,4 +50,18 @@ class StateSpec extends FlatSpec {
     assert(b1 != b2)
   }
 
+  it should "EXERCISE 6.6 intDoubleViaMap2" in {
+    import RNG._
+    val rng = SimpleRNG(42)
+    val ((ia1, da1), ra1) = intDouble(rng)
+    val ((ib1, db1), rb1) = intDoubleViaMap2(rng)
+    assert(ia1 == ib1)
+    assert(da1 == db1)
+    val ((ia2, da2), _) = intDouble(ra1)
+    val ((ib2, db2), _) = intDoubleViaMap2(rb1)
+    assert(ia2 == ib2)
+    assert(da2 == db2)
+    assert(ia1 != ib2)
+    assert(da1 != db2)
+  }
 }
