@@ -64,4 +64,20 @@ class StateSpec extends FlatSpec {
     assert(ia1 != ib2)
     assert(da1 != db2)
   }
+
+  it should "EXERCISE 6.7 intsViaSequence" in {
+    import RNG._
+    val rng = SimpleRNG(42)
+    val (a, r) = intsViaSequence(3)(rng)
+    assert(a(0) != a(1))
+    assert(a(0) != a(2))
+    val (b, _) = intsViaSequence(3)(rng)
+    assert(a(0) == b(0))
+    assert(a(1) == b(1))
+    assert(a(2) == b(2))
+    val (c, _) = intsViaSequence(3)(r)
+    assert(a(0) != c(0))
+    assert(a(1) != c(1))
+    assert(a(2) != c(2))
+  }
 }

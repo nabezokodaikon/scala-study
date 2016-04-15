@@ -133,7 +133,14 @@ object RNG {
 
   def doubleIntViaMap2: Rand[(Double, Int)] = both(doubleViaMap, int)
 
-  // def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = ???
+  /**
+   * EXERCISE 6.7
+   */
+  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] =
+    fs.foldLeft(unit(List[A]()))((xs, h) => map2(h, xs)(_ :: _))
+
+  def intsViaSequence(count: Int): Rand[List[Int]] =
+    sequence(List.fill(count)(int))
 
   // def flatMap[A,B](f: Rand[A])(g: A => Rand[B]): Rand[B] = ???
 }
