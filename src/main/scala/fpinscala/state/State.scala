@@ -201,13 +201,26 @@ case class State[S, +A](run: S => (A, S)) {
 
 object State {
 
+  type Rand[A] = State[RNG, A]
+
   def unit[S, A](a: A): State[S, A] =
     State(s => (a, s))
 
   def sequence[S, A](fs: List[State[S, A]]): State[S, List[A]] =
     fs.foldLeft(unit[S, List[A]](List()))((xs, h) => h.map2(xs)(_ :: _))
 
-  // type Rand[A] = State[RNG, A]
+  val int: Rand[Int] = State[RNG, Int](RNG.map(RNG.nonNegativeLessThanViaFlatMap(10))(_ + 1))
+
+  def ints(count: Int): Rand[List[Int]] =
+    sequence(List.fill(count)(int))
+
+  val ns1: Rand[List[Int]] = {
+    int.flatMap(x => // intはランダムな整数を1つ生成するRand[Int]型の値。 
+      int.flatMap(y =>
+        ints(x).map(xs => // ints(x)は長さxのリストを生成。
+          xs.map(_ % y)))) // リスト内のすべての要素をyで割った余りと置き換える。
+  }
+
   // def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = ???
 }
 
