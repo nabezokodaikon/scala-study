@@ -221,6 +221,12 @@ object State {
           xs.map(_ % y)))) // リスト内のすべての要素をyで割った余りと置き換える。
   }
 
+  val ns2: Rand[List[Int]] = for {
+    x <- int
+    y <- int
+    xs <- ints(x)
+  } yield xs.map(_ % y)
+
   // def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = ???
 }
 

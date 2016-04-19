@@ -80,4 +80,12 @@ class StateSpec extends FlatSpec {
     assert(a(1) != c(1))
     assert(a(2) != c(2))
   }
+
+  it should "for内包表記" in {
+    val rng = RNG.SimpleRNG(42)
+    val res1 = State.ns1.run(rng)
+    val res2 = State.ns2.run(rng)
+    assert(res1._1 == res2._1)
+    assert(res1._2 == res2._2)
+  }
 }
