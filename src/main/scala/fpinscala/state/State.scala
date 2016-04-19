@@ -227,6 +227,18 @@ object State {
     xs <- ints(x)
   } yield xs.map(_ % y)
 
+  // リスト 6-10
+  def modify[S](f: S => S): State[S, Unit] = for {
+    s <- get // 現在の状態を取得し、sに代入。 
+    _ <- set(f(s)) // sに適用されるfに新しい状態を設定。
+  } yield ()
+
+  // リスト 6-11
+  def get[S]: State[S, S] = State(s => (s, s))
+
+  // リスト 6-12
+  def set[S](s: S): State[S, Unit] = State(_ => ((), s))
+
   // def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = ???
 }
 
