@@ -239,7 +239,6 @@ object State {
   // リスト 6-12
   def set[S](s: S): State[S, Unit] = State(_ => ((), s))
 
-  // def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = ???
 }
 
 sealed trait Input
@@ -248,3 +247,31 @@ case object Turn extends Input
 
 case class Machine(locked: Boolean, candies: Int, coins: Int)
 
+object Candy {
+  import State._
+
+  def update = (i: Input) => (s: Machine) =>
+    (i, s) match {
+      // スナックが売り切れているため、何もしない。
+      case (_, Machine(_, 0, _)) => s
+      // ロックが解除された状態のため、コインを投入しても何もしない。
+      case (Coin, Machine(false, _, _)) => s
+      // ロックされた状態のため、ハンドルを回しても何もしない。
+      case (Turn, Machine(true, _, _)) => s
+      // ロックされた状態のときに、コインを投入した。
+      case (Coin, Machine(true, candy, coin)) =>
+        Machine(false, candy, coin + 1)
+      // ロックが解除された状態のときに、ハンドルを回した。
+      case (Turn, Machine(false, candy, coin)) =>
+        Machine(true, candy - 1, coin)
+    }
+
+  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = for {
+    _ <- sequence(inputs.map(modify[Machine] _ compose update))
+    s <- get
+  } yield (s.coins, s.candies)
+
+  // def simulateMachine2(inputs: List[Input]): State[Machine, (Int, Int)] = {
+  // sequence(inputs.map(modify[Machine] _ compose update)).flatMap(a => (get.coins, get.candies))
+  // } 
+}

@@ -88,4 +88,13 @@ class StateSpec extends FlatSpec {
     assert(res1._1 == res2._1)
     assert(res1._2 == res2._2)
   }
+
+  it should "EXERCISE 6.11" in {
+    val machine = Machine(false, 5, 10)
+    val inputs = List.fill(4)((Coin, Turn)).flatMap(i => List(i._1, i._2))
+    val state = Candy.simulateMachine(inputs)
+    val res = state.run(machine)
+    assert(res._1._1 == 14)
+    assert(res._1._2 == 1)
+  }
 }
