@@ -266,12 +266,26 @@ object Candy {
         Machine(true, candy - 1, coin)
     }
 
-  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = for {
+  def simulateMachine1(inputs: List[Input]): State[Machine, (Int, Int)] = for {
     _ <- sequence(inputs.map(modify[Machine] _ compose update))
-    s <- get
+    s <- get[Machine]
   } yield (s.coins, s.candies)
 
-  // def simulateMachine2(inputs: List[Input]): State[Machine, (Int, Int)] = {
-  // sequence(inputs.map(modify[Machine] _ compose update)).flatMap(a => (get.coins, get.candies))
-  // } 
+  def simulateMachine2(inputs: List[Input]): State[Machine, (Int, Int)] = {
+    val fs: List[State[Machine, Unit]] = inputs.map(i => modify[Machine](s => update(i)(s)))
+    println(fs)
+
+    val seq: State[Machine, List[Unit]] = sequence(fs)
+    println(seq)
+
+    val ret = seq.flatMap(i =>
+      State[Machine, Machine](s => { // TODO: この行がわからない。
+        println(s)
+        (s, s)
+      }).map(s =>
+        (s.coins, s.candies)))
+
+    println(ret)
+    ret
+  }
 }
