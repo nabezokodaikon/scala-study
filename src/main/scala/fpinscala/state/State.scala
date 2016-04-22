@@ -228,12 +228,14 @@ object State {
   } yield xs.map(_ % y)
 
   // リスト 6-10
+  // 現在の状態に関数fを実行し、変更された状態を返す。
   def modify[S](f: S => S): State[S, Unit] = for {
     s <- get // 現在の状態を取得し、sに代入。 
     _ <- set(f(s)) // sに適用されるfに新しい状態を設定。
   } yield ()
 
   // リスト 6-11
+  // 現在の状態を返す関数。
   def get[S]: State[S, S] = State(s => (s, s))
 
   // リスト 6-12
@@ -250,7 +252,8 @@ case class Machine(locked: Boolean, candies: Int, coins: Int)
 object Candy {
   import State._
 
-  def update = (i: Input) => (s: Machine) =>
+  // Inputを引数として受け取り、現在の状態から次の状態へ更新する関数を返す。
+  def update = (i: Input) => (s: Machine) => {
     (i, s) match {
       // スナックが売り切れているため、何もしない。
       case (_, Machine(_, 0, _)) => s
@@ -265,27 +268,44 @@ object Candy {
       case (Turn, Machine(false, candy, coin)) =>
         Machine(true, candy - 1, coin)
     }
+  }
 
   def simulateMachine1(inputs: List[Input]): State[Machine, (Int, Int)] = for {
     _ <- sequence(inputs.map(modify[Machine] _ compose update))
     s <- get[Machine]
   } yield (s.coins, s.candies)
 
+  // simulateMachine1と同じ処理を分解してみた。
   def simulateMachine2(inputs: List[Input]): State[Machine, (Int, Int)] = {
-    val fs: List[State[Machine, Unit]] = inputs.map(i => modify[Machine](s => update(i)(s)))
-    println(fs)
+
+    // 入力から状態を更新していく関数リストを作成する。
+    val fs: List[State[Machine, Unit]] = inputs.map(i => {
+      val state: State[Machine, Unit] =
+        modify[Machine](before => {
+          // Machineの状態を更新する。
+          println(s"before: ${i}, ${before}")
+          val after: Machine = update(i)(before)
+          println(s"after: ${after}")
+          after
+        })
+      state
+    })
+    println(s"1: ${fs}")
 
     val seq: State[Machine, List[Unit]] = sequence(fs)
-    println(seq)
+    println(s"2: ${seq}")
 
+    // 最終的な結果を生成する状態を作成する。
+    // val ret = seq.flatMap(i => get[Machine].map(s => (s.coins, s.candies)))
     val ret = seq.flatMap(i =>
-      State[Machine, Machine](s => { // TODO: この行がわからない。
-        println(s)
+      State[Machine, Machine](s => {
+        println(s"4: ${s}")
         (s, s)
-      }).map(s =>
-        (s.coins, s.candies)))
+      }).map(s => {
+        (s.coins, s.candies)
+      }))
 
-    println(ret)
+    println(s"3: ${ret}")
     ret
   }
 }

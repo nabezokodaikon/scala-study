@@ -102,6 +102,7 @@ class StateSpec extends FlatSpec {
     val machine = Machine(false, 5, 10)
     val inputs = List.fill(4)((Coin, Turn)).flatMap(i => List(i._1, i._2))
     val state = Candy.simulateMachine2(inputs)
+    println("########")
     val res = state.run(machine)
     assert(res._1._1 == 14)
     assert(res._1._2 == 1)
