@@ -1,54 +1,35 @@
 package fpinscala.testing
 
+import fpinscala.laziness.Stream
 import fpinscala.state._
+import fpinscala.parallelism._
+import fpinscala.parallelism.Par.Par
+import Gen._
+import Prop._
+import java.util.concurrent.{ Executors, ExecutorService }
 
-object Prop {
-  type FailedCase = String
-  type SuccessCount = Int
-}
+/*
+The library developed in this chapter goes through several iterations. This file is just the
+shell, which you can fill in and modify while working through the chapter.
+*/
 
 trait Prop {
-  import Prop._
-  def check: Either[(FailedCase, SuccessCount), SuccessCount]
-  // def &&(p: Prop): = new Prop {
-  // def check = Prop.this.check && p.check
-  // }
-
 }
 
-// trait Gen[A] {
-
-// def listOf(a: Gen[A]): Gen[List[A]]
-// def listOfN(n: Int, a: Gen[A]): Gen[List[A]]
-// def forAll(a: Gen[A])(f: A => Boolean): Prop
-// }
-
-// case class Gen[+A](sample: State[RNG, A]) {
-
-// }
+object Prop {
+  // def forAll[A](gen: Gen[A])(f: A => Boolean): Prop = ???
+}
 
 object Gen {
+  // def unit[A](a: => A): Gen[A] = ???
+}
 
-  // fpin.scala.Stateを実装し直す必要あり。
-  /**
-   * EXERCIZE 8.4
-   *
-   * startからstopExclusiveの範囲内の整数を生成する。
-   */
-  // def choose(start: Int, stopExclusive: Int): Gen[Int] = {
-  // val rng = SimpleRNG(0)
-  // Gen(State(rng.nonNegativeInt).map(n => start + n % (stopExclusive - start)))
-  // }
+trait Gen[A] {
+  // def map[A,B](f: A => B): Gen[B] = ???
+  // def flatMap[A,B](f: A => Gen[B]): Gen[B] = ???
+}
 
-  /**
-   * EXERCIZE 8.5
-   */
-  // def unit[A](a: => A): Gen[A] =
-  // Gen(State.unit(a))
-
-  // def boolean: Gen[Boolean] =
-
-  // def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] =
+trait SGen[+A] {
 
 }
 
