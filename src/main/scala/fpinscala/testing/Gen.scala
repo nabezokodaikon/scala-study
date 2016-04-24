@@ -14,13 +14,27 @@ shell, which you can fill in and modify while working through the chapter.
 */
 
 trait Prop {
+
+  def check: Boolean
+
+  // EXERCIZE 8.3
+  def &&(p: Prop): Prop = new Prop {
+    def check = Prop.this.check && p.check
+  }
+
 }
 
 object Prop {
+
   // def forAll[A](gen: Gen[A])(f: A => Boolean): Prop = ???
+
 }
 
 object Gen {
+
+  // def listOf[A](a: Gen[A]): Gen[List[A]]
+  // def listOfN[A](n: Int, a: Gen[A]): Gen[List[A]]
+
   // def unit[A](a: => A): Gen[A] = ???
 }
 
