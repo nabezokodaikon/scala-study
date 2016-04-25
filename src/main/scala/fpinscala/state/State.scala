@@ -43,6 +43,11 @@ object RNG {
     (i / (Int.MaxValue.toDouble + 1), r)
   }
 
+  def boolean(rng: RNG): (Boolean, RNG) =
+    rng.nextInt match {
+      case (i, rng2) => (i % 2 == 0, rng2)
+    }
+
   /**
    * EXERCISE 6.3
    */
