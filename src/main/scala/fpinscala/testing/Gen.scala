@@ -46,10 +46,18 @@ object Gen {
       case (n, rng2) => (start + n % (stopExclusive - start), rng2)
     }))
 
-  // def listOf[A](a: Gen[A]): Gen[List[A]]
-  // def listOfN[A](n: Int, a: Gen[A]): Gen[List[A]]
+  // EXERCIZE 8.5
+  def unit[A](a: => A): Gen[A] =
+    Gen(State.unit(a))
 
-  // def unit[A](a: => A): Gen[A] = ???
+  def boolean: Gen[Boolean] =
+    Gen(State(RNG.boolean))
+
+  def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] =
+    Gen(State.sequence(List.fill(n)(g.sample)))
+
+  // def listOf[A](a: Gen[A]): Gen[List[A]]
+
 }
 
 // trait Gen[A] {
