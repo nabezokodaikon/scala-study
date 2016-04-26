@@ -67,7 +67,17 @@ object Gen {
   def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] =
     Gen(State.sequence(List.fill(n)(g.sample)))
 
-  // def listOf[A](a: Gen[A]): Gen[List[A]]
+  // EXERCIZE 8.7
+  def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] =
+    boolean.flatMap(a => if (a) g1 else g2)
+
+  // EXERCIZE 8.8
+  def weighted[A](g1: (Gen[A], Double), g2: (Gen[A], Double)) = {
+    // 閾値を算出する。
+    val g1Threshold = g1._2.abs / (g1._2.abs + g2._2.abs)
+    Gen(State(RNG.double).flatMap(d =>
+      if (d < g1Threshold) g1._1.sample else g2._1.sample))
+  }
 
 }
 

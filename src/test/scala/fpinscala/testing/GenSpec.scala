@@ -66,5 +66,35 @@ class GenSpec extends FlatSpec {
     assert(l1 == l2)
     assert(l1 != l3)
   }
+
+  it should "EXERCIZE 8.7 union" in {
+    import fpinscala.state._
+    val rng = RNG.SimpleRNG(10)
+    val g1 = Gen.unit(1)
+    val g2 = Gen.unit(2)
+    val res1 = Gen.union(g1, g1)
+    val res2 = Gen.union(g1, g2)
+    assert(res1.sample.run(rng)._1 == g1.sample.run(rng)._1)
+    assert(res2.sample.run(rng)._1 == g1.sample.run(rng)._1 ||
+      res2.sample.run(rng)._1 == g2.sample.run(rng)._1)
+  }
+
+  it should "EXERCIZE 8.8 weighted" in {
+    import fpinscala.state._
+    val rng = RNG.SimpleRNG(10)
+    val d1 = 0.2
+    val d2 = 0.4
+    val g1 = Gen.unit(1)
+    val g2 = Gen.unit(2)
+    val res1 = Gen.weighted((g1, d1), (g1, d1))
+    val res2 = Gen.weighted((g1, d1), (g2, d1))
+    val res3 = Gen.weighted((g1, d1), (g2, d2))
+    assert(res1.sample.run(rng)._1 == g1.sample.run(rng)._1)
+    assert(res2.sample.run(rng)._1 == g1.sample.run(rng)._1 ||
+      res2.sample.run(rng)._1 == g2.sample.run(rng)._1)
+    assert(res3.sample.run(rng)._1 == g1.sample.run(rng)._1 ||
+      res2.sample.run(rng)._1 == g2.sample.run(rng)._1)
+  }
+
 }
 
