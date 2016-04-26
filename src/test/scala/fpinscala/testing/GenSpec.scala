@@ -54,5 +54,17 @@ class GenSpec extends FlatSpec {
     assert(l1 == l2)
     assert(l1 != l3)
   }
+
+  it should "EXERCIZE 8.6 listOfN" in {
+    import fpinscala.state._
+    val sizeGen = Gen.unit(5)
+    val gen = Gen(State.int)
+    val listGen = gen.listOfN(sizeGen)
+    val (l1, _) = listGen.sample.run(RNG.SimpleRNG(10))
+    val (l2, _) = listGen.sample.run(RNG.SimpleRNG(10))
+    val (l3, _) = listGen.sample.run(RNG.SimpleRNG(11))
+    assert(l1 == l2)
+    assert(l1 != l3)
+  }
 }
 
