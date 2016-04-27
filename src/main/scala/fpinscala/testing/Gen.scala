@@ -13,24 +13,82 @@ The library developed in this chapter goes through several iterations. This file
 shell, which you can fill in and modify while working through the chapter.
 */
 
-trait Prop {
+// trait Prop {
 
-  def check: Either[(FailedCase, SuccessCount), SuccessCount]
+// def check: Either[(FailedCase, SuccessCount), SuccessCount]
 
-  // EXERCIZE 8.3
-  // def &&(p: Prop): Prop = new Prop {
-  // def check = Prop.this.check && p.check
-  // }
+// // EXERCIZE 8.3
+// // def &&(p: Prop): Prop = new Prop {
+// // def check = Prop.this.check && p.check
+// // }
 
+// }
+
+sealed trait Result {
+  def isFalsified: Boolean
 }
+
+// 全てのテストにパスしたことを示す。
+case object Passed extends Result {
+  def isFalsified = false
+}
+
+// テストケースの1つがプロパティを反証したことを示す。
+case class Falsified(
+    failure: FailedCase,
+    success: SuccessCount
+) extends Result {
+  def isFalsified = true
+}
+
+case class Prop(run: (TestCases, RNG) => Result)
 
 object Prop {
 
+  // バグを引き起こすテストケース。
   type FailedCase = String
+
+  // 成功するテストケースの数。
   type SuccessCount = Int
 
-  // def forAll[A](gen: Gen[A])(f: A => Boolean): Prop = ???
+  // テストケースの数。
+  type TestCases = Int
 
+  /**
+   * TODO: fpinscala.laziness.Stream.zipを実装してから以下のコメントを外す。
+   * P.165 リスト 8-3
+   */
+  /*
+  def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop {
+    (n, rng) =>
+      randomStream(as)(rng).zip(Stream.from(0)).take(n).map {
+        // ペア(a, i)のストリーム。
+        // aはランダム値、iはストリーム内でのそのインデックス。
+        case (a, i) =>
+          try {
+            if (f(a)) {
+              Passed
+            } else {
+              // テストに失敗した場合は、失敗したケースとそのインデックスを記録し、
+              // それまでに成功したテストの数がわかるようにする。
+              Falsified(a.toString, i)
+            }
+          } catch {
+            // テストケースが例外を生成した場合は、それを結果に記録。
+            case e: Exception => Falsified(buildMsg(a, e), i)
+          }
+      }.find(_.isFalsified).getOrElse(Passed)
+  }
+
+  // ジェネレータを繰り返しサンプリングすることにより、Aの無限ストリームを生成。
+  def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] =
+    Stream.unfold(rng)(rng => Some(g.sample.run(rng)))
+
+  def buildMsg[A](s: A, e: Exception): String =
+    s"test case: $s\n" +
+      s"nenerated an exception: ${e.getMessage}\n" +
+      s"stack trace:\n ${e.getStackTrace.mkString("\n")}"
+  */
 }
 
 case class Gen[A](sample: State[RNG, A]) {
