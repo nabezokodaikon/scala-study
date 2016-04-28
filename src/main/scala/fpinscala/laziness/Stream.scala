@@ -22,3 +22,39 @@ object LazinessExample {
 
 }
 
+trait Stream[+A] {
+
+  // Streamの先頭を取り出す。
+  def headOption: Option[A] = this match {
+    case Empty => None
+    case Cons(h, t) => Some(h())
+  }
+
+}
+
+case object Empty extends Stream[Nothing]
+
+// 空でないストリームは先頭と末尾で構成される。
+// それらはどちらも非正格である。
+// 技術的な限界により、これらは名前渡しのパラメータではなく、
+// 明示的な強制を必要とするサンクである。
+case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A]
+
+object Stream {
+
+  // 空でないストリームを作成するためのスマートコンストラクタ。
+  def cons[A](hd: => A, tl: => Stream[A]): Stream[A] = {
+    // 評価の繰り返しを避けるために、headとtailを遅延値としてキャッシュ。
+    lazy val head = hd
+    lazy val tail = tl
+    Cons(() => head, () => tail)
+  }
+
+  // 特定の型の空ストリームを作成するためのスマートコンストラクタ。
+  def empty[A]: Stream[A] = Empty
+
+  // 複数の要素からStreamを作成するための、可変長引数を持つ便利なメソッド。
+  def apply[A](as: A*): Stream[A] =
+    if (as.isEmpty) empty
+    else cons(as.head, apply(as.tail: _*))
+}
