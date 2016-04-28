@@ -43,6 +43,8 @@ case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A]
 object Stream {
 
   // 空でないストリームを作成するためのスマートコンストラクタ。
+  // 名前渡しされた引数は、評価が最初に参照されるときまで先送りされるように保持してから
+  // Consに渡すようにしている。
   def cons[A](hd: => A, tl: => Stream[A]): Stream[A] = {
     // 評価の繰り返しを避けるために、headとtailを遅延値としてキャッシュ。
     lazy val head = hd
