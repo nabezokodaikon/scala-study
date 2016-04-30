@@ -37,4 +37,10 @@ class StreamSpec extends FlatSpec {
     val h2 = x.headOption
   }
 
+  it should "EXERCIZE 5.1 toList" in {
+    val s = Stream(1, 2, 3)
+    val l = s.toList
+    assert(l == List(1, 2, 3))
+  }
+
 }

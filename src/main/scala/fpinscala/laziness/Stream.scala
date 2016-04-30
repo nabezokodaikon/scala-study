@@ -30,6 +30,33 @@ trait Stream[+A] {
     case Cons(h, t) => Some(h())
   }
 
+  // EXERCIZE 5.1
+  def toList: List[A] = this match {
+    case Empty => Nil
+    case Cons(h, t) => h() :: t().toList
+  }
+
+  def toList2: List[A] = {
+    @annotation.tailrec
+    def go(s: Stream[A], acc: List[A]): List[A] = s match {
+      case Cons(h, t) => go(t(), h() :: acc)
+      case _ => acc
+    }
+    go(this, List()).reverse
+  }
+
+  def toList3: List[A] = {
+    val buf = new collection.mutable.ListBuffer[A]
+    @annotation.tailrec
+    def go(s: Stream[A]): List[A] = s match {
+      case Cons(h, t) =>
+        buf += h()
+        go(t())
+      case _ => buf.toList
+    }
+    go(this)
+  }
+
 }
 
 case object Empty extends Stream[Nothing]
