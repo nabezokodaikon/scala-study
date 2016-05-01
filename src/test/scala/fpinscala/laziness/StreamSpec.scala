@@ -43,4 +43,21 @@ class StreamSpec extends FlatSpec {
     assert(l == List(1, 2, 3))
   }
 
+  it should "EXERCIZE 5.2 take" in {
+    val s = Stream(1, 2, 3, 4, 5)
+    assert(s.take(0).toList == List())
+    assert(s.take(1).toList == List(1))
+    assert(s.take(2).toList == List(1, 2))
+    assert(s.take(5).toList == List(1, 2, 3, 4, 5))
+    assert(s.take(6).toList == List(1, 2, 3, 4, 5))
+  }
+
+  it should "EXERCIZE 5.2 drop" in {
+    val s = Stream(1, 2, 3, 4, 5)
+    assert(s.drop(0).toList == List(1, 2, 3, 4, 5))
+    assert(s.drop(1).toList == List(2, 3, 4, 5))
+    assert(s.drop(5).toList == List())
+    assert(s.drop(6).toList == List())
+  }
+
 }
