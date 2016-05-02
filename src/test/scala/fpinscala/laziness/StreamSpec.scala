@@ -66,4 +66,10 @@ class StreamSpec extends FlatSpec {
     assert(s.takeWhile(_ % 2 == 1).toList == List(1))
   }
 
+  it should "EXERCIZE 5.4 forAll" in {
+    assert(Stream().forAll(a => a == 1) == true)
+    assert(Stream(1, 1, 1).forAll(a => a == 1) == true)
+    assert(Stream(1, 1, 2).forAll(a => a == 1) == false)
+  }
+
 }
