@@ -106,6 +106,10 @@ trait Stream[+A] {
   // EXERCIZE 5.6
   def headOptionViaFoldRight: Option[A] =
     foldRight(None: Option[A])((h, _) => Some(h))
+
+  // EXERCIZE 5.7
+  def map[B](f: A => B): Stream[B] =
+    foldRight(Stream.empty[B])((h, t) => Stream.cons(f(h), t))
 }
 
 case object Empty extends Stream[Nothing]

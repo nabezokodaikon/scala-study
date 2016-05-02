@@ -83,4 +83,9 @@ class StreamSpec extends FlatSpec {
     assert(Stream(1, 2, 3).headOptionViaFoldRight == Some(1))
   }
 
+  it should "EXERCIZE 5.7 map" in {
+    assert(Stream.empty[Int].map(_.toString).toList == Stream.empty[String].toList)
+    assert(Stream(1, 2, 3).map(_.toString).toList == Stream("1", "2", "3").toList)
+  }
+
 }
