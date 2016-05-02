@@ -78,4 +78,9 @@ class StreamSpec extends FlatSpec {
     assert(s.takeWhileViaFoldRight(_ % 2 == 1).toList == List(1))
   }
 
+  it should "EXERCIZE 5.6 headOptionViaFoldRight" in {
+    assert(Empty.headOptionViaFoldRight == None)
+    assert(Stream(1, 2, 3).headOptionViaFoldRight == Some(1))
+  }
+
 }
