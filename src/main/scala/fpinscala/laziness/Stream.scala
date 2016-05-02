@@ -76,6 +76,23 @@ trait Stream[+A] {
     case _ => Empty
   }
 
+  def exists(p: A => Boolean): Boolean = this match {
+    case Cons(h, t) => p(h()) || t().exists(p)
+    case _ => false
+  }
+
+  def existsViaFoldRight(p: A => Boolean): Boolean =
+    foldRight(false)((a, b) => p(a) || b)
+
+  // 引数型Bの前にある=>矢印は、関数fが第2引数を名前渡しで受け取ることと、
+  // それを評価しないという選択が可能であることを意味する。
+  def foldRight[B](z: => B)(f: (A, => B) => B): B =
+    this match {
+      // fが第2引数を評価しない場合、再帰は発生しない。
+      case Cons(h, t) => f(h(), t().foldRight(z)(f))
+      case _ => z
+    }
+
 }
 
 case object Empty extends Stream[Nothing]
