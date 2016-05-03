@@ -124,6 +124,7 @@ trait Stream[+A] {
 
   def find(p: A => Boolean): Option[A] =
     filter(p).headOption
+
 }
 
 case object Empty extends Stream[Nothing]
