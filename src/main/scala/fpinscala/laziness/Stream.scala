@@ -110,6 +110,20 @@ trait Stream[+A] {
   // EXERCIZE 5.7
   def map[B](f: A => B): Stream[B] =
     foldRight(Stream.empty[B])((h, t) => Stream.cons(f(h), t))
+
+  def filter(f: A => Boolean): Stream[A] =
+    foldRight(Stream.empty[A])((h, t) =>
+      if (f(h)) Stream.cons(h, t)
+      else t)
+
+  def append[B >: A](s: => Stream[B]): Stream[B] =
+    foldRight(s)((h, t) => Stream.cons(h, t))
+
+  def flatMap[B](f: A => Stream[B]): Stream[B] =
+    foldRight(Stream.empty[B])((h, t) => f(h) append t)
+
+  def find(p: A => Boolean): Option[A] =
+    filter(p).headOption
 }
 
 case object Empty extends Stream[Nothing]

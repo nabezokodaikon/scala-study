@@ -88,4 +88,20 @@ class StreamSpec extends FlatSpec {
     assert(Stream(1, 2, 3).map(_.toString).toList == Stream("1", "2", "3").toList)
   }
 
+  it should "EXERCIZE 5.7 filter" in {
+    val s = Stream(1, 2, 3, 4, 5)
+    assert(s.filter(a => a % 2 == 0).toList == List(2, 4))
+    assert(s.filter(a => a % 2 == 1).toList == List(1, 3, 5))
+  }
+
+  it should "EXERCIZE 5.7 append" in {
+    assert(Stream(1, 2).append(Stream(3, 4, 5)).toList == List(1, 2, 3, 4, 5))
+  }
+
+  it should "EXERCIZE 5.7 flatMap" in {
+    val s = Stream(Stream(1, 2), Stream(3), Stream(4, 5))
+    val l = s.flatMap(i => i).toList
+    assert(l == List(1, 2, 3, 4, 5))
+  }
+
 }
