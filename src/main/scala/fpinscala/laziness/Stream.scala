@@ -158,4 +158,7 @@ object Stream {
   // 無限に続くStreamを生成する。
   val ones: Stream[Int] = Stream.cons(1, ones)
 
+  // EXERCIZE 5.8
+  def constant[A](a: A): Stream[A] =
+    Stream.cons(a, constant(a))
 }
