@@ -163,4 +163,10 @@ object Stream {
     lazy val tail: Stream[A] = Cons(() => a, () => tail)
     tail
   }
+
+  // EXERCIZE 5.9
+  def from(n: Int): Stream[Int] = {
+    lazy val tail: Stream[Int] = Cons(() => n, () => from(n + 1))
+    tail
+  }
 }
