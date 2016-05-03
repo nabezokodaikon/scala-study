@@ -104,4 +104,7 @@ class StreamSpec extends FlatSpec {
     assert(l == List(1, 2, 3, 4, 5))
   }
 
+  it should "EXERCIZE 5.8 constant" in {
+    assert(Stream.constant("a").take(3).toList == List("a", "a", "a"))
+  }
 }
