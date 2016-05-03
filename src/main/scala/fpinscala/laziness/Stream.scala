@@ -159,6 +159,8 @@ object Stream {
   val ones: Stream[Int] = Stream.cons(1, ones)
 
   // EXERCIZE 5.8
-  def constant[A](a: A): Stream[A] =
-    Stream.cons(a, constant(a))
+  def constant[A](a: A): Stream[A] = {
+    lazy val tail: Stream[A] = Cons(() => a, () => tail)
+    tail
+  }
 }
