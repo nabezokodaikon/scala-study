@@ -116,4 +116,9 @@ class StreamSpec extends FlatSpec {
     val fibs = Stream.fibs
     assert(fibs.take(7).toList == List(0, 1, 1, 2, 3, 5, 8))
   }
+
+  it should "EXERCIZE 5.12 fibsViaUnfold" in {
+    val fibs = Stream.fibsViaUnfold
+    assert(fibs.take(7).toList == List(0, 1, 1, 2, 3, 5, 8))
+  }
 }
