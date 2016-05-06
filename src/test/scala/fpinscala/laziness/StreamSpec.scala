@@ -121,4 +121,17 @@ class StreamSpec extends FlatSpec {
     val fibs = Stream.fibsViaUnfold
     assert(fibs.take(7).toList == List(0, 1, 1, 2, 3, 5, 8))
   }
+
+  it should "EXERCIZE 5.12 fromViaUnfold" in {
+    assert(Stream.fromViaUnfold(0).take(2).toList == List(0, 1))
+    assert(Stream.fromViaUnfold(5).take(3).toList == List(5, 6, 7))
+  }
+
+  it should "EXERCIZE 5.12 constantViaUnfold" in {
+    assert(Stream.constantViaUnfold("a").take(3).toList == List("a", "a", "a"))
+  }
+
+  it should "EXERCIZE 5.12 onesViaUnfold" in {
+    assert(Stream.onesViaUnfold.take(3).toList == List(1, 1, 1))
+  }
 }

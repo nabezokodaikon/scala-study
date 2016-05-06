@@ -185,4 +185,14 @@ object Stream {
   // EXERCIZE 5.12
   def fibsViaUnfold: Stream[Int] =
     unfold((0, 1)) { case (f0, f1) => Some((f0, (f1, f0 + f1))) }
+
+  def fromViaUnfold(n: Int): Stream[Int] =
+    unfold(n) { case n => Some((n, n + 1)) }
+
+  def constantViaUnfold[A](a: A): Stream[A] =
+    unfold(a) { case _ => Some((a, a)) }
+
+  val onesViaUnfold: Stream[Int] =
+    unfold(1) { case _ => Some((1, 1)) }
+
 }
