@@ -125,6 +125,13 @@ trait Stream[+A] {
   def find(p: A => Boolean): Option[A] =
     filter(p).headOption
 
+  // EXERCIZE 5.13
+  def mapViaUnfold[B](f: A => B): Stream[B] =
+    Stream.unfold(this) {
+      case Cons(h, t) => Some((f(h()), t()))
+      case _ => None
+    }
+
 }
 
 case object Empty extends Stream[Nothing]

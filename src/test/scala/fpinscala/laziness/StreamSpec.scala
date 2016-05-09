@@ -134,4 +134,9 @@ class StreamSpec extends FlatSpec {
   it should "EXERCIZE 5.12 onesViaUnfold" in {
     assert(Stream.onesViaUnfold.take(3).toList == List(1, 1, 1))
   }
+
+  it should "EXERCIZE 5.13 mapViaUnfold" in {
+    assert(Stream.empty[Int].mapViaUnfold(_.toString).toList == Stream.empty[String].toList)
+    assert(Stream(1, 2, 3).mapViaUnfold(_.toString).toList == Stream("1", "2", "3").toList)
+  }
 }
