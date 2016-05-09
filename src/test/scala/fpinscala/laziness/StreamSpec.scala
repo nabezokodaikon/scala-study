@@ -161,4 +161,10 @@ class StreamSpec extends FlatSpec {
     val r = a.zipWith(b)(_ + _).toList
     assert(r == List(2, 4, 6))
   }
+
+  it should "EXERCIZE 5.13 zipAll" in {
+    assert(Stream(1, 2).zipAll(Stream("a")).toList == List((Some(1), Some("a")), (Some(2), None)))
+    assert(Stream(1).zipAll(Stream("a", "b")).toList == List((Some(1), Some("a")), (None, Some("b"))))
+    assert(Stream(1, 2).zipAll(Stream("a", "b")).toList == List((Some(1), Some("a")), (Some(2), Some("b"))))
+  }
 }
