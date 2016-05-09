@@ -139,4 +139,13 @@ class StreamSpec extends FlatSpec {
     assert(Stream.empty[Int].mapViaUnfold(_.toString).toList == Stream.empty[String].toList)
     assert(Stream(1, 2, 3).mapViaUnfold(_.toString).toList == Stream("1", "2", "3").toList)
   }
+
+  it should "EXERCIZE 5.13 takeViaUnfold" in {
+    val s = Stream(1, 2, 3, 4, 5)
+    assert(s.takeViaUnfold(0).toList == List())
+    assert(s.takeViaUnfold(1).toList == List(1))
+    assert(s.takeViaUnfold(2).toList == List(1, 2))
+    assert(s.takeViaUnfold(5).toList == List(1, 2, 3, 4, 5))
+    assert(s.takeViaUnfold(6).toList == List(1, 2, 3, 4, 5))
+  }
 }
