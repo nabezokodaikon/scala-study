@@ -154,4 +154,11 @@ class StreamSpec extends FlatSpec {
     assert(s.takeWhileViaUnfold(_ < 3).toList == List(1, 2))
     assert(s.takeWhileViaUnfold(_ % 2 == 1).toList == List(1))
   }
+
+  it should "EXERCIZE 5.13 zipWith" in {
+    val a = Stream(1, 2, 3)
+    val b = Stream(1, 2, 3)
+    val r = a.zipWith(b)(_ + _).toList
+    assert(r == List(2, 4, 6))
+  }
 }

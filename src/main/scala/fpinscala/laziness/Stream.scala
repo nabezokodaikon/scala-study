@@ -144,6 +144,12 @@ trait Stream[+A] {
       case Cons(h, t) if (f(h())) => Some((h(), t()))
       case _ => None
     }
+
+  def zipWith[B >: A](s: Stream[B])(f: (B, B) => B): Stream[B] =
+    Stream.unfold((this, s)) {
+      case ((Cons(h1, t1), Cons(h2, t2))) => Some((f(h1(), h2()), (t1(), t2())))
+      case _ => None
+    }
 }
 
 case object Empty extends Stream[Nothing]
