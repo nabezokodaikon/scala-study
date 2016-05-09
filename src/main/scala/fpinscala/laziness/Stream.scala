@@ -134,28 +134,34 @@ trait Stream[+A] {
 
   def takeViaUnfold(n: Int): Stream[A] =
     Stream.unfold((this, n)) {
-      case (Cons(h, t), i) if (i > 1) => Some((h(), (t(), i - 1)))
-      case (Cons(h, _), i) if (i == 1) => Some((h(), (Empty, i - 1)))
+      case (Cons(h, _), 1) => Some((h(), (Empty, 0)))
+      case (Cons(h, t), n) if n > 1 => Some((h(), (t(), n - 1)))
       case _ => None
     }
 
   def takeWhileViaUnfold(f: A => Boolean): Stream[A] =
     Stream.unfold(this) {
-      case Cons(h, t) if (f(h())) => Some((h(), t()))
+      case Cons(h, t) if f(h()) => Some((h(), t()))
       case _ => None
     }
 
-  def zipWith[B >: A](s: Stream[B])(f: (B, B) => B): Stream[B] =
+  def zip[B](s: Stream[B]): Stream[(A, B)] =
+    zipWith(s)((_, _))
+
+  def zipWith[B, C](s: Stream[B])(f: (A, B) => C): Stream[C] =
     Stream.unfold((this, s)) {
-      case ((Cons(h1, t1), Cons(h2, t2))) => Some((f(h1(), h2()), (t1(), t2())))
+      case (Cons(h1, t1), Cons(h2, t2)) => Some((f(h1(), h2()), (t1(), t2())))
       case _ => None
     }
 
   def zipAll[B](s: Stream[B]): Stream[(Option[A], Option[B])] =
+    zipWithAll(s)((_, _))
+
+  def zipWithAll[B, C](s: Stream[B])(f: (Option[A], Option[B]) => C): Stream[C] =
     Stream.unfold((this, s)) {
-      case ((Cons(h1, t1), Empty)) => Some(((Some(h1()), None), (t1(), Empty)))
-      case ((Empty, Cons(h2, t2))) => Some(((None, Some(h2())), (Empty, t2())))
-      case ((Cons(h1, t1), Cons(h2, t2))) => Some(((Some(h1()), Some(h2())), (t1(), t2())))
+      case (Cons(h1, t1), Empty) => Some(f(Some(h1()), Option.empty[B]) -> (t1() -> Stream.empty[B]))
+      case (Empty, Cons(h2, t2)) => Some(f(Option.empty[A], Some(h2())) -> (Stream.empty[A] -> t2()))
+      case (Cons(h1, t1), Cons(h2, t2)) => Some(f(Some(h1()), Some(h2())) -> (t1() -> t2()))
       case _ => None
     }
 }

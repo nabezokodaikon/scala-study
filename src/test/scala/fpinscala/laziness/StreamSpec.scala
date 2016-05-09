@@ -166,5 +166,6 @@ class StreamSpec extends FlatSpec {
     assert(Stream(1, 2).zipAll(Stream("a")).toList == List((Some(1), Some("a")), (Some(2), None)))
     assert(Stream(1).zipAll(Stream("a", "b")).toList == List((Some(1), Some("a")), (None, Some("b"))))
     assert(Stream(1, 2).zipAll(Stream("a", "b")).toList == List((Some(1), Some("a")), (Some(2), Some("b"))))
+    assert(Stream.empty.zipAll(Stream.empty).toList == List())
   }
 }
