@@ -168,4 +168,9 @@ class StreamSpec extends FlatSpec {
     assert(Stream(1, 2).zipAll(Stream("a", "b")).toList == List((Some(1), Some("a")), (Some(2), Some("b"))))
     assert(Stream.empty.zipAll(Stream.empty).toList == List())
   }
+
+  it should "EXERCIZE 5.14 startsWith" in {
+    assert(Stream(1, 2, 3).startsWith(Stream(1, 2)) == true)
+    assert(Stream(1, 2, 3).startsWith(Stream(2, 3)) == false)
+  }
 }
