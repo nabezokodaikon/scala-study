@@ -1,319 +1,262 @@
 package fpinscala.laziness
 
-trait Stream[+A] {
-  import Stream._
+object LazinessExample {
 
+  // 引数onTrueとonFalseを関数リテラルで渡している。
+  def if2[A](cond: Boolean, onTrue: () => A, onFalse: () => A): A =
+    if (cond) onTrue() else onFalse()
+
+  // if2の引数の渡し方の省略表記。
+  def if3[A](cond: Boolean, onTrue: => A, onFalse: => A): A =
+    if (cond) onTrue else onFalse
+
+  // 引数iを都度評価するため、iを2回評価している。
+  def maybeTwice(b: Boolean, i: => Int) =
+    if (b) i + i else 0
+
+  // 引数iをキャッシュするため、iは1回しか評価されない。
+  def maybeTwice2(b: Boolean, i: => Int) = {
+    lazy val j = i
+    if (b) j + j else 0
+  }
+
+}
+
+trait Stream[+A] {
+
+  // Streamの先頭を取り出す。
   def headOption: Option[A] = this match {
     case Empty => None
     case Cons(h, t) => Some(h())
   }
 
-  /** EXERCISE 5.1 */
+  // EXERCIZE 5.1
   def toList: List[A] = this match {
     case Empty => Nil
     case Cons(h, t) => h() :: t().toList
   }
 
-  /**
-   * EXERCISE 5.2
-   *
-   * Stream の先頭から n 個の要素を取り出す。
-   */
-  def take(n: Int): Stream[A] = this match {
-    case Cons(h, t) if n > 1 => cons(h(), t().take(n - 1))
-    case Cons(h, t) if n == 1 => cons(h(), empty)
-    case _ => empty
+  def toList2: List[A] = {
+    @annotation.tailrec
+    def go(s: Stream[A], acc: List[A]): List[A] = s match {
+      case Cons(h, t) => go(t(), h() :: acc)
+      case _ => acc
+    }
+    go(this, List()).reverse
   }
 
-  /**
-   * EXERCISE 5.2
-   *
-   * Stream の先頭からn個の要素をスキップする。
-   */
+  def toList3: List[A] = {
+    val buf = new collection.mutable.ListBuffer[A]
+    @annotation.tailrec
+    def go(s: Stream[A]): List[A] = s match {
+      case Cons(h, t) =>
+        buf += h()
+        go(t())
+      case _ => buf.toList
+    }
+    go(this)
+  }
+
+  // EXERCIZE 5.2
+  def take(n: Int): Stream[A] = this match {
+    case Cons(h, t) if n > 1 => Stream.cons(h(), t().take(n - 1))
+    case Cons(h, _) if n == 1 => Stream.cons(h(), Empty)
+    case _ => Empty
+  }
+
   @annotation.tailrec
   final def drop(n: Int): Stream[A] = this match {
-    case Cons(h, t) if n > 0 => t().drop(n - 1)
+    case Cons(_, t) if n > 0 => t().drop(n - 1)
     case _ => this
   }
 
-  /**
-   * EXERCISE 5.3
-   *
-   * Stream の先頭から指定された述語とマッチする要素を全て取り出す。
-   */
+  // EXERCIZE 5.3
   def takeWhile(p: A => Boolean): Stream[A] = this match {
-    case Cons(h, t) if p(h()) => cons(h(), t().takeWhile(p))
-    case _ => empty
+    case Cons(h, t) if p(h()) => Stream.cons(h(), t() takeWhile p)
+    case _ => Empty
   }
 
-  /**
-   * Boolean 関数とマッチする要素がこの Stream に存在するかどうかをチェックします。
-   */
   def exists(p: A => Boolean): Boolean = this match {
     case Cons(h, t) => p(h()) || t().exists(p)
     case _ => false
   }
 
-  def exists_1(p: A => Boolean): Boolean =
+  def existsViaFoldRight(p: A => Boolean): Boolean =
     foldRight(false)((a, b) => p(a) || b)
 
-  /**
-   * 汎用的な再帰関数
-   */
+  // 引数型Bの前にある=>矢印は、関数fが第2引数を名前渡しで受け取ることと、
+  // それを評価しないという選択が可能であることを意味する。
   def foldRight[B](z: => B)(f: (A, => B) => B): B =
     this match {
+      // fが第2引数を評価しない場合、再帰は発生しない。
       case Cons(h, t) => f(h(), t().foldRight(z)(f))
       case _ => z
     }
 
-  /**
-   * EXERCISE 5.4
-   * 指定された述語とマッチするもの全てをチェックする。
-   * マッチしない値が検出された時点でチェックを終了する。
-   */
+  // EXERCIZE 5.4
   def forAll(p: A => Boolean): Boolean =
     foldRight(true)((a, b) => p(a) && b)
 
-  /**
-   * EXERCISE 5.5
-   *
-   * foldRight を使用して Stream の先頭から指定された述語とマッチする要素を全て取り出す。
-   */
+  // EXERCIZE 5.5
   def takeWhileViaFoldRight(p: A => Boolean): Stream[A] =
-    foldRight(empty[A])((a, b) =>
-      if (p(a)) cons(a, b)
-      else empty)
+    foldRight(Stream.empty[A])((h, t) =>
+      if (p(h)) Stream.cons(h, t)
+      else Stream.empty[A])
 
-  /**
-   * EXERCISE 5.6
-   *
-   * foldRight を使用して Stream の先頭の要素を取り出す。
-   */
+  // EXERCIZE 5.6
   def headOptionViaFoldRight: Option[A] =
     foldRight(None: Option[A])((h, _) => Some(h))
 
-  /**
-   * EXERCISE 5.7
-   */
+  // EXERCIZE 5.7
   def map[B](f: A => B): Stream[B] =
-    foldRight(empty[B])((h, t) => cons(f(h), t))
+    foldRight(Stream.empty[B])((h, t) => Stream.cons(f(h), t))
 
-  /**
-   * EXERCISE 5.7
-   */
   def filter(f: A => Boolean): Stream[A] =
-    foldRight(empty[A])((h, t) =>
-      if (f(h)) cons(h, t)
+    foldRight(Stream.empty[A])((h, t) =>
+      if (f(h)) Stream.cons(h, t)
       else t)
 
-  /**
-   * EXERCISE 5.7
-   */
-  def append[B >: A](s: Stream[B]): Stream[B] =
-    foldRight(s)((h, t) => cons(h, t))
+  def append[B >: A](s: => Stream[B]): Stream[B] =
+    foldRight(s)((h, t) => Stream.cons(h, t))
 
-  /**
-   * EXERCISE 5.7
-   */
   def flatMap[B](f: A => Stream[B]): Stream[B] =
-    foldRight(empty[B])((h, t) => f(h).append(t))
+    foldRight(Stream.empty[B])((h, t) => f(h) append t)
 
-  /**
-   * マッチする要素が存在する場合にその最初の要素だけを返す。
-   */
   def find(p: A => Boolean): Option[A] =
     filter(p).headOption
 
-  /**
-   * EXERCISE 5.13
-   */
+  // EXERCIZE 5.13
   def mapViaUnfold[B](f: A => B): Stream[B] =
-    unfold(this) {
+    Stream.unfold(this) {
       case Cons(h, t) => Some((f(h()), t()))
       case _ => None
     }
 
-  /**
-   * EXERCISE 5.13
-   */
   def takeViaUnfold(n: Int): Stream[A] =
-    unfold((n, this)) {
-      case (1, Cons(h, t)) => Some((h(), (0, empty)))
-      case (n, Cons(h, t)) if n > 1 => Some((h(), (n - 1, t())))
+    Stream.unfold((this, n)) {
+      case (Cons(h, _), 1) => Some((h(), (Empty, 0)))
+      case (Cons(h, t), n) if n > 1 => Some((h(), (t(), n - 1)))
       case _ => None
     }
 
-  /**
-   * EXERCISE 5.13
-   */
-  def takeWhileViaUnfold(p: A => Boolean): Stream[A] =
-    unfold(this) {
-      case Cons(h, t) if p(h()) => Some((h(), t()))
+  def takeWhileViaUnfold(f: A => Boolean): Stream[A] =
+    Stream.unfold(this) {
+      case Cons(h, t) if f(h()) => Some((h(), t()))
       case _ => None
     }
 
-  /**
-   * EXERCISE 5.13
-   * 対応する要素同士を足し合わせて新しい Stream を生成する。
-   */
-  def zipWith[B >: A](s: Stream[B])(f: (B, B) => B): Stream[B] =
-    unfold((this, s)) {
-      case (Cons(h1, t1), Cons(h2, t2)) =>
-        Some((f(h1(), h2()), (t1(), t2())))
+  def zip[B](s: Stream[B]): Stream[(A, B)] =
+    zipWith(s)((_, _))
+
+  def zipWith[B, C](s: Stream[B])(f: (A, B) => C): Stream[C] =
+    Stream.unfold((this, s)) {
+      case (Cons(h1, t1), Cons(h2, t2)) => Some((f(h1(), h2()), (t1(), t2())))
       case _ => None
     }
 
-  /**
-   * EXERCISE 5.13
-   * 対応する要素同士をタプルにして返す。
-   * どちらかの Stream に要素が残っている限り、評価を続ける。
-   */
   def zipAll[B](s: Stream[B]): Stream[(Option[A], Option[B])] =
-    unfold((this, s)) {
-      case (Cons(h1, t1), Cons(h2, t2)) => Some(((Some(h1()), Some(h2())), (t1(), t2())))
-      case (Empty, Cons(h2, t2)) => Some(((None, Some(h2())), (empty, t2())))
-      case (Cons(h1, t1), Empty) => Some(((Some(h1()), None), (t1(), empty)))
+    zipWithAll(s)((_, _))
+
+  def zipWithAll[B, C](s: Stream[B])(f: (Option[A], Option[B]) => C): Stream[C] =
+    Stream.unfold((this, s)) {
+      case (Cons(h1, t1), Empty) => Some(f(Some(h1()), Option.empty[B]) -> (t1() -> Stream.empty[B]))
+      case (Empty, Cons(h2, t2)) => Some(f(Option.empty[A], Some(h2())) -> (Stream.empty[A] -> t2()))
+      case (Cons(h1, t1), Cons(h2, t2)) => Some(f(Some(h1()), Some(h2())) -> (t1() -> t2()))
       case _ => None
     }
 
-  // def zipAll_1[B](s2: Stream[B]): Stream[(Option[A], Option[B])] =
-  // zipWithAll(s2)((_, _))
-
-  // def zipWithAll[B, C](s2: Stream[B])(f: (Option[A], Option[B]) => C): Stream[C] =
-  // Stream.unfold((this, s2)) {
-  // case (Empty, Empty) => None
-  // case (Cons(h, t), Empty) => Some(f(Some(h()), Option.empty[B]) -> (t(), empty[B]))
-  // case (Empty, Cons(h, t)) => Some(f(Option.empty[A], Some(h())) -> (empty[A] -> t()))
-  // case (Cons(h1, t1), Cons(h2, t2)) => Some(f(Some(h1()), Some(h2())) -> (t1() -> t2()))
-  // }
-
-  /**
-   * EXERCISE 5.14
-   * Stream が別の Stream のプレフィックスであるかどうかを調べる。
-   */
-  def startsWith[B](s: Stream[B]): Boolean =
-    this.zipAll(s).takeWhile(!_._2.isEmpty).forAll {
-      case (h1, h2) => h1 == h2
+  // EXERCIZE 5.14
+  def startsWith[B >: A](s: Stream[B]): Boolean =
+    zipAll(s).takeWhileViaUnfold(!_._2.isEmpty).forAll {
+      case (a, b) => a == b
     }
 
-  /**
-   * EXERCISE 5.15
-   * 先頭を除いたコレクションを順次返す。
-   */
+  // EXERCIZE 5.15
   def tails: Stream[Stream[A]] =
-    unfold(this) {
+    Stream.unfold(this) {
       case Empty => None
-      case s => Some((s, s.drop(1)))
-    }.append(Stream(empty))
+      case s => Some((s, s drop 1))
+    } append Stream(Empty)
 
-  /**
-   * 特定のシーケンスが含まれているかどうかをチェックする。
-   */
-  def hasSubsequence[B](sub: Stream[B]): Boolean =
-    this.tails.exists(_.startsWith(sub))
+  // リストに特定のシーケンスが含まれているかどうかをチェックする。
+  def hasSubsequence[B >: A](s: Stream[B]): Boolean =
+    tails.exists(_.startsWith(s))
 
-  /**
-   * EXERCISE 5.16
-   *
-   * tails の一般化関数。
-   * foldRight と同様に、この関数は中間結果を Stream で返す。
-   *
-   * TODO: わからん。
-   */
+  // EXERCIZE 5.16
   def scanRight[B](z: B)(f: (A, => B) => B): Stream[B] =
     foldRight((z, Stream(z)))((a, p0) => {
       lazy val p1 = p0
       val b2 = f(a, p1._1)
-      (b2, cons(b2, p1._2))
+      (b2, Stream.cons(b2, p1._2))
     })._2
 }
 
 case object Empty extends Stream[Nothing]
+
+// 空でないストリームは先頭と末尾で構成される。
+// それらはどちらも非正格である。
+// 技術的な限界により、これらは名前渡しのパラメータではなく、
+// 明示的な強制を必要とするサンクである。
 case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A]
 
 object Stream {
 
+  // 空でないストリームを作成するためのスマートコンストラクタ。
+  // 名前渡しされた引数は、評価が最初に参照されるときまで先送りされるように保持してから
+  // Consに渡すようにしている。
   def cons[A](hd: => A, tl: => Stream[A]): Stream[A] = {
+    // 評価の繰り返しを避けるために、headとtailを遅延値としてキャッシュ。
     lazy val head = hd
     lazy val tail = tl
     Cons(() => head, () => tail)
   }
 
+  // 特定の型の空ストリームを作成するためのスマートコンストラクタ。
   def empty[A]: Stream[A] = Empty
 
+  // 複数の要素からStreamを作成するための、可変長引数を持つ便利なメソッド。
   def apply[A](as: A*): Stream[A] =
     if (as.isEmpty) empty
     else cons(as.head, apply(as.tail: _*))
 
-  /**
-   * EXERCISE 5.8
-   * 指定された値の無限ストリームを返す。
-   */
+  // 無限に続くStreamを生成する。
+  val ones: Stream[Int] = Stream.cons(1, ones)
+
+  // EXERCIZE 5.8
   def constant[A](a: A): Stream[A] = {
-    lazy val t: Stream[A] = Cons(() => a, () => t)
-    t
+    lazy val tail: Stream[A] = Cons(() => a, () => tail)
+    tail
   }
 
-  /**
-   * EXERCISE 5.9
-   * n で始まって n + 1, n + 2 と続く整数の無限ストリームを生成する。
-   */
+  // EXERCIZE 5.9
   def from(n: Int): Stream[Int] =
     cons(n, from(n + 1))
 
-  /**
-   * EXERCISE 5.10
-   * フィボナッチ数列の無限ストリームを生成する。
-   */
-  def fibs(): Stream[Int] = {
-    def fib(n: Int): Int = n match {
-      case 0 => 0
-      case 1 => 1
-      case _ => fib(n - 2) + fib(n - 1)
-    }
-    from(0).map(fib(_))
-  }
-
-  val fibs_1 = {
-    def go(f0: Int, f1: Int): Stream[Int] = {
+  // EXERCIZE 5.10
+  val fibs: Stream[Int] = {
+    def go(f0: Int, f1: Int): Stream[Int] =
       cons(f0, go(f1, f0 + f1))
-    }
     go(0, 1)
   }
 
-  /**
-   * EXERCISE 5.11
-   * 汎用的なストリーム生成関数。
-   *
-   * @param z 初期状態。
-   * @param f ストリームの次の値を生成する関数。
-   * @return ストリーム。
-   */
+  // EXERCIZE 5.11
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] =
     f(z) match {
-      case Some((h, s)) => cons(h, unfold(s)(f))
+      case Some((a, s)) => cons(a, unfold(s)(f))
       case _ => empty
     }
 
-  /**
-   * EXERCISE 5.12
-   */
-  val fibsViaUnfold =
-    unfold((0, 1))(n => Some((n._1, (n._2, n._1 + n._2))))
+  // EXERCIZE 5.12
+  def fibsViaUnfold: Stream[Int] =
+    unfold((0, 1)) { case (f0, f1) => Some((f0, (f1, f0 + f1))) }
 
-  val fibsViaUnfold_1 =
-    unfold((0, 1)) { case (n0, n1) => Some((n0, (n1, n0 + n1))) }
-
-  /**
-   * EXERCISE 5.12
-   */
   def fromViaUnfold(n: Int): Stream[Int] =
-    unfold(n)(n => Some((n, n + 1)))
+    unfold(n) { case n => Some((n, n + 1)) }
 
-  /**
-   * EXERCISE 5.12
-   */
   def constantViaUnfold[A](a: A): Stream[A] =
-    unfold(a)(_ => Some((a, a)))
+    unfold(a) { case _ => Some((a, a)) }
+
+  val onesViaUnfold: Stream[Int] =
+    unfold(1) { case _ => Some((1, 1)) }
 
 }
