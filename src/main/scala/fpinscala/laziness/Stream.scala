@@ -177,6 +177,10 @@ trait Stream[+A] {
       case Empty => None
       case s => Some((s, s drop 1))
     } append Stream(Empty)
+
+  // リストに特定のシーケンスが含まれているかどうかをチェックする。
+  def hasSubsequence[B >: A](s: Stream[B]): Boolean =
+    tails.exists(_.startsWith(s))
 }
 
 case object Empty extends Stream[Nothing]
