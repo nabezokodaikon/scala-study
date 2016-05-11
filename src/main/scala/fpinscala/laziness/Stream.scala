@@ -181,6 +181,14 @@ trait Stream[+A] {
   // リストに特定のシーケンスが含まれているかどうかをチェックする。
   def hasSubsequence[B >: A](s: Stream[B]): Boolean =
     tails.exists(_.startsWith(s))
+
+  // EXERCIZE 5.16
+  def scanRight[B](z: B)(f: (A, => B) => B): Stream[B] =
+    foldRight((z, Stream(z)))((a, p0) => {
+      lazy val p1 = p0
+      val b2 = f(a, p1._1)
+      (b2, Stream.cons(b2, p1._2))
+    })._2
 }
 
 case object Empty extends Stream[Nothing]
