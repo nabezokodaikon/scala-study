@@ -174,9 +174,9 @@ trait Stream[+A] {
   // EXERCIZE 5.15
   def tails: Stream[Stream[A]] =
     Stream.unfold(this) {
-      case Empty => Some((Stream.empty[A], Stream.empty[A]))
-      case Cons(h, t) => Some((Cons(h, t), t()))
-    }
+      case Empty => None
+      case s => Some((s, s drop 1))
+    } append Stream(Empty)
 }
 
 case object Empty extends Stream[Nothing]
