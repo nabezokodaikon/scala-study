@@ -8,203 +8,187 @@ class StreamSpec extends FlatSpec {
 
   it should "headOption" in {
     val s = Stream(1, 2, 3)
-    val ret = s.headOption
-    assert(ret == Some(1))
+    val h = s.headOption
+    assert(h == Some(1))
   }
 
-  it should "EXERCISE 5.1 toList" in {
+  it should "キャッシュされない処理のサンプル" in {
+    // println("not cache")が2回出力されることで確認できる。
+    def expensive(x: Int): Int = {
+      println("not cache")
+      x
+    }
+
+    val t = () => Stream(1, 2, 3)
+    val x = Cons(() => expensive(1), t)
+    val h1 = x.headOption
+    val h2 = x.headOption
+  }
+
+  it should "キャッシュされる処理のサンプル" in {
+    // println("cache")が1回出力されることで確認できる。
+    def expensive(x: Int): Int = {
+      println("cache")
+      x
+    }
+
+    val x = Stream(expensive(1), 2, 3)
+    val h1 = x.headOption
+    val h2 = x.headOption
+  }
+
+  it should "EXERCIZE 5.1 toList" in {
     val s = Stream(1, 2, 3)
     val l = s.toList
     assert(l == List(1, 2, 3))
   }
 
-  it should "EXERCISE 5.2 take" in {
-    val a = Stream(1, 2, 3).take(2).toList
-    assert(a == List(1, 2))
+  it should "EXERCIZE 5.2 take" in {
+    val s = Stream(1, 2, 3, 4, 5)
+    assert(s.take(0).toList == List())
+    assert(s.take(1).toList == List(1))
+    assert(s.take(2).toList == List(1, 2))
+    assert(s.take(5).toList == List(1, 2, 3, 4, 5))
+    assert(s.take(6).toList == List(1, 2, 3, 4, 5))
   }
 
-  it should "EXERCISE 5.2 drop" in {
-    val a = Stream(1, 2, 3).drop(2).toList
-    assert(a == List(3))
+  it should "EXERCIZE 5.2 drop" in {
+    val s = Stream(1, 2, 3, 4, 5)
+    assert(s.drop(0).toList == List(1, 2, 3, 4, 5))
+    assert(s.drop(1).toList == List(2, 3, 4, 5))
+    assert(s.drop(5).toList == List())
+    assert(s.drop(6).toList == List())
   }
 
-  it should "EXERCISE 5.3 takeWhile" in {
-    val a = Stream(1, 2, 3, 4).takeWhile(_ < 3).toList
-    assert(a == List(1, 2))
+  it should "EXERCIZE 5.3 takeWhile" in {
+    val s = Stream(1, 2, 3, 4, 5)
+    assert(s.takeWhile(_ < 3).toList == List(1, 2))
+    assert(s.takeWhile(_ % 2 == 1).toList == List(1))
   }
 
-  it should "EXERCISE 5.4 forAll" in {
-    val a = Stream(1, 2, 3).forAll(
-      i => { println(s"hello${i}"); i < 2 }
-    )
-    assert(a == false)
+  it should "EXERCIZE 5.4 forAll" in {
+    assert(Stream().forAll(a => a == 1) == true)
+    assert(Stream(1, 1, 1).forAll(a => a == 1) == true)
+    assert(Stream(1, 1, 2).forAll(a => a == 1) == false)
   }
 
-  it should "EXERCISE 5.5 takeWhileViaFoldRight" in {
-    val a = Stream(1, 2, 3, 4).takeWhileViaFoldRight(_ < 3).toList
-    assert(a == List(1, 2))
+  it should "EXERCIZE 5.5 takeWhileViaFoldRight" in {
+    val s = Stream(1, 2, 3, 4, 5)
+    assert(s.takeWhileViaFoldRight(_ < 3).toList == List(1, 2))
+    assert(s.takeWhileViaFoldRight(_ % 2 == 1).toList == List(1))
   }
 
-  it should "EXERCISE 5.6 headOptionViaFoldRight" in {
-    val a = Stream(1, 2, 3, 4).headOptionViaFoldRight
-    assert(a == Some(1))
-    val b = Stream().headOptionViaFoldRight
-    assert(b == None)
+  it should "EXERCIZE 5.6 headOptionViaFoldRight" in {
+    assert(Empty.headOptionViaFoldRight == None)
+    assert(Stream(1, 2, 3).headOptionViaFoldRight == Some(1))
   }
 
-  it should "EXERCISE 5.7 map" in {
-    val a = Stream(1, 2, 3, 4)
-    val b = a.map(_.toString).toList
-    assert(b == List("1", "2", "3", "4"))
+  it should "EXERCIZE 5.7 map" in {
+    assert(Stream.empty[Int].map(_.toString).toList == Stream.empty[String].toList)
+    assert(Stream(1, 2, 3).map(_.toString).toList == Stream("1", "2", "3").toList)
   }
 
-  it should "EXERCISE 5.7 filter" in {
-    val a = Stream(1, 2, 3, 4)
-    val b = a.filter(i => i % 2 == 0).toList
-    assert(b == List(2, 4))
+  it should "EXERCIZE 5.7 filter" in {
+    val s = Stream(1, 2, 3, 4, 5)
+    assert(s.filter(a => a % 2 == 0).toList == List(2, 4))
+    assert(s.filter(a => a % 2 == 1).toList == List(1, 3, 5))
   }
 
-  it should "EXERCISE 5.7 append" in {
-    val a = Stream(1, 2).append(Stream(3, 4)).toList
-    assert(a == List(1, 2, 3, 4))
+  it should "EXERCIZE 5.7 append" in {
+    assert(Stream(1, 2).append(Stream(3, 4, 5)).toList == List(1, 2, 3, 4, 5))
   }
 
-  it should "EXERCISE 5.7 flatMap" in {
-    val a = Stream(1, 2, 3).flatMap(i => Stream(i, i)).toList
-    assert(a == List(1, 1, 2, 2, 3, 3))
+  it should "EXERCIZE 5.7 flatMap" in {
+    val s = Stream(Stream(1, 2), Stream(3), Stream(4, 5))
+    val l = s.flatMap(i => i).toList
+    assert(l == List(1, 2, 3, 4, 5))
   }
 
-  it should "トレース" in {
-    val s = Stream(
-      { () => println(s"Stream${1}"); 1 },
-      { () => println(s"Stream${2}"); 2 },
-      { () => println(s"Stream${3}"); 3 },
-      { () => println(s"Stream${4}"); 4 }
-    ).map(i => {
-        println(s"map${i}")
-        i() + 10
-      }).filter(i => {
-        println(s"filter${i}")
-        i % 2 == 0
-      })
-    println(s"StreamResult${s}")
-
-    val l = List(
-      { () => println(s"List${1}"); 1 },
-      { () => println(s"List${2}"); 2 },
-      { () => println(s"List${3}"); 3 },
-      { () => println(s"List${4}"); 4 }
-    ).map(i => {
-        println(s"map${i}")
-        i() + 10
-      }).filter(i => {
-        println(s"filter${i}")
-        i % 2 == 0
-      })
-    println(s"ListResult${l}")
+  it should "EXERCIZE 5.8 constant" in {
+    assert(Stream.constant("a").take(3).toList == List("a", "a", "a"))
   }
 
-  it should "find" in {
-    val s = Stream(
-      { () => println(s"find${1}"); 1 },
-      { () => println(s"find${2}"); 2 },
-      { () => println(s"find${3}"); 3 },
-      { () => println(s"find${4}"); 4 }
-    )
-    val a = s.find(_() == 2)
-    println(s"${a}")
+  it should "EXERCIZE 5.9 from" in {
+    assert(Stream.from(5).take(3).toList == List(5, 6, 7))
   }
 
-  it should "EXERCISE 5.9 from" in {
-    val a = Stream.from(5)
-    assert(a.take(5).toList == List(5, 6, 7, 8, 9))
+  it should "EXERCIZE 5.10 fibs" in {
+    val fibs = Stream.fibs
+    assert(fibs.take(7).toList == List(0, 1, 1, 2, 3, 5, 8))
   }
 
-  it should "EXERCISE 5.10 fibs" in {
-    val a = Stream.fibs().take(10).toList
-    assert(a == List(0, 1, 1, 2, 3, 5, 8, 13, 21, 34))
+  it should "EXERCIZE 5.12 fibsViaUnfold" in {
+    val fibs = Stream.fibsViaUnfold
+    assert(fibs.take(7).toList == List(0, 1, 1, 2, 3, 5, 8))
   }
 
-  it should "EXERCISE 5.10 fibs_1" in {
-    val a = Stream.fibs_1.take(10).toList
-    assert(a == List(0, 1, 1, 2, 3, 5, 8, 13, 21, 34))
+  it should "EXERCIZE 5.12 fromViaUnfold" in {
+    assert(Stream.fromViaUnfold(0).take(2).toList == List(0, 1))
+    assert(Stream.fromViaUnfold(5).take(3).toList == List(5, 6, 7))
   }
 
-  it should "EXERCISE 5.12 fibsViaUnfold" in {
-    val a = Stream.fibsViaUnfold.take(10).toList
-    assert(a == List(0, 1, 1, 2, 3, 5, 8, 13, 21, 34))
+  it should "EXERCIZE 5.12 constantViaUnfold" in {
+    assert(Stream.constantViaUnfold("a").take(3).toList == List("a", "a", "a"))
   }
 
-  it should "EXERCISE 5.12 fromViaUnfold" in {
-    val a = Stream.fromViaUnfold(5).take(5).toList
-    assert(a == List(5, 6, 7, 8, 9))
+  it should "EXERCIZE 5.12 onesViaUnfold" in {
+    assert(Stream.onesViaUnfold.take(3).toList == List(1, 1, 1))
   }
 
-  it should "EXERCISE 5.12 constantViaUnfold" in {
-    val a = Stream.constantViaUnfold("A").take(5).toList
-    assert(a == List("A", "A", "A", "A", "A"))
+  it should "EXERCIZE 5.13 mapViaUnfold" in {
+    assert(Stream.empty[Int].mapViaUnfold(_.toString).toList == Stream.empty[String].toList)
+    assert(Stream(1, 2, 3).mapViaUnfold(_.toString).toList == Stream("1", "2", "3").toList)
   }
 
-  it should "EXERCISE 5.13 mapViaUnfold" in {
-    val a = Stream(1, 2, 3).map(_.toString).toList
-    assert(a == List("1", "2", "3"))
+  it should "EXERCIZE 5.13 takeViaUnfold" in {
+    val s = Stream(1, 2, 3, 4, 5)
+    assert(s.takeViaUnfold(0).toList == List())
+    assert(s.takeViaUnfold(1).toList == List(1))
+    assert(s.takeViaUnfold(2).toList == List(1, 2))
+    assert(s.takeViaUnfold(5).toList == List(1, 2, 3, 4, 5))
+    assert(s.takeViaUnfold(6).toList == List(1, 2, 3, 4, 5))
   }
 
-  it should "EXERCISE 5.13 takeViaUnfold" in {
-    val a = Stream.fromViaUnfold(5).takeViaUnfold(5).toList
-    assert(a == List(5, 6, 7, 8, 9))
+  it should "EXERCIZE 5.13 takeWhileViaUnfold" in {
+    val s = Stream(1, 2, 3, 4, 5)
+    assert(s.takeWhileViaUnfold(_ < 3).toList == List(1, 2))
+    assert(s.takeWhileViaUnfold(_ % 2 == 1).toList == List(1))
   }
 
-  it should "EXERCISE 5.13 takeWhileViaUnfold" in {
-    val a = Stream(1, 3, 2, 5).takeWhileViaUnfold(_ % 2 == 1).toList
-    assert(a == List(1, 3))
-  }
-
-  it should "EXERCISE 5.13 zipWith" in {
+  it should "EXERCIZE 5.13 zipWith" in {
     val a = Stream(1, 2, 3)
-    val b = Stream(4, 5, 6)
-    val r = a.zipWith(b)(_ + _)
-    assert(r.toList == List(5, 7, 9))
+    val b = Stream(1, 2, 3)
+    val r = a.zipWith(b)(_ + _).toList
+    assert(r == List(2, 4, 6))
   }
 
-  it should "EXERCISE 5.13 zipAll" in {
-    val a = Stream(1, 2, 3).zipAll(Stream("a", "b", "c")).toList
-    assert(a == List((Some(1), Some("a")), (Some(2), Some("b")), (Some(3), Some("c"))))
-    val b = Stream(1, 2).zipAll(Stream("a", "b", "c")).toList
-    assert(b == List((Some(1), Some("a")), (Some(2), Some("b")), (None, Some("c"))))
-    val c = Stream(1, 2, 3).zipAll(Stream("a", "b")).toList
-    assert(c == List((Some(1), Some("a")), (Some(2), Some("b")), (Some(3), None)))
+  it should "EXERCIZE 5.13 zipAll" in {
+    assert(Stream(1, 2).zipAll(Stream("a")).toList == List((Some(1), Some("a")), (Some(2), None)))
+    assert(Stream(1).zipAll(Stream("a", "b")).toList == List((Some(1), Some("a")), (None, Some("b"))))
+    assert(Stream(1, 2).zipAll(Stream("a", "b")).toList == List((Some(1), Some("a")), (Some(2), Some("b"))))
+    assert(Stream.empty.zipAll(Stream.empty).toList == List())
   }
 
-  // it should "EXERCISE 5.13 zipAll_1" in {
-  // val a = Stream(1, 2, 3).zipAll_1(Stream("a", "b", "c")).toList
-  // assert(a == List((Some(1), Some("a")), (Some(2), Some("b")), (Some(3), Some("c"))))
-  // val b = Stream(1, 2).zipAll_1(Stream("a", "b", "c")).toList
-  // assert(b == List((Some(1), Some("a")), (Some(2), Some("b")), (None, Some("c"))))
-  // val c = Stream(1, 2, 3).zipAll_1(Stream("a", "b")).toList
-  // assert(c == List((Some(1), Some("a")), (Some(2), Some("b")), (Some(3), None)))
-  // }
-
-  it should "EXERCISE 5.14 startsWith" in {
+  it should "EXERCIZE 5.14 startsWith" in {
     assert(Stream(1, 2, 3).startsWith(Stream(1, 2)) == true)
     assert(Stream(1, 2, 3).startsWith(Stream(2, 3)) == false)
   }
 
-  it should "EXERCISE 5.15 tails" in {
+  it should "EXERCIZE 5.15 tails" in {
     val r = Stream(1, 2, 3).tails.map(_.toList).toList
     assert(r == List(List(1, 2, 3), List(2, 3), List(3), List()))
   }
 
   it should "hasSubsequence" in {
-    val a = Stream(1, 2, 3, 4, 5)
-    assert(a.hasSubsequence(Stream(1, 2)) == true)
-    assert(a.hasSubsequence(Stream(3, 4, 5)) == true)
-    assert(a.hasSubsequence(Stream(3, 5)) == false)
-    assert(a.hasSubsequence(Empty) == true)
+    val s = Stream(1, 2, 3, 4, 5)
+    assert(s.hasSubsequence(Stream(2, 3)) == true)
+    assert(s.hasSubsequence(Stream(5)) == true)
+    assert(s.hasSubsequence(Stream(5, 6)) == false)
   }
 
-  it should "EXERCISE 5.16 scalRight" in {
-    val r = Stream(1, 2, 3).scanRight(0)(_ + _).toList
-    assert(r == List(6, 5, 3, 0))
+  it should "EXERCIZE 5.16 scanRight" in {
+    val s = Stream(1, 2, 3)
+    val l = s.scanRight(1)(_ + _).toList
+    assert(l == List(7, 6, 4, 1))
   }
 }
