@@ -54,13 +54,9 @@ object Prop {
   // テストケースの数。
   type TestCases = Int
 
-  /**
-   * TODO: fpinscala.laziness.Stream.zipを実装してから以下のコメントを外す。
-   * P.165 リスト 8-3
-   */
-  /*
-  def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop {
-    (n, rng) =>
+  // リスト 8-3
+  def forAll[A](as: Gen[A])(f: A => Boolean): Prop =
+    Prop { (n, rng) =>
       randomStream(as)(rng).zip(Stream.from(0)).take(n).map {
         // ペア(a, i)のストリーム。
         // aはランダム値、iはストリーム内でのそのインデックス。
@@ -78,7 +74,7 @@ object Prop {
             case e: Exception => Falsified(buildMsg(a, e), i)
           }
       }.find(_.isFalsified).getOrElse(Passed)
-  }
+    }
 
   // ジェネレータを繰り返しサンプリングすることにより、Aの無限ストリームを生成。
   def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] =
@@ -88,7 +84,6 @@ object Prop {
     s"test case: $s\n" +
       s"nenerated an exception: ${e.getMessage}\n" +
       s"stack trace:\n ${e.getStackTrace.mkString("\n")}"
-  */
 }
 
 case class Gen[A](sample: State[RNG, A]) {
