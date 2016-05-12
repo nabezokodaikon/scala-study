@@ -33,6 +33,10 @@ case object Passed extends Result {
   def isFalsified = false
 }
 
+case object Proved extends Result {
+  def isFalsified = false
+}
+
 // テストケースの1つがプロパティを反証したことを示す。
 case class Falsified(
     failure: FailedCase,
@@ -41,7 +45,33 @@ case class Falsified(
   def isFalsified = true
 }
 
-case class Prop(run: (TestCases, RNG) => Result)
+case class Prop(run: (MaxSize, TestCases, RNG) => Result) {
+
+  // EXERCIZE 8.9
+  def &&(p: Prop) = Prop {
+    (max, n, rng) =>
+      run(max, n, rng) match {
+        case Passed | Proved => p.run(max, n, rng)
+        case x => x
+      }
+  }
+
+  def ||(p: Prop) = Prop {
+    (max, n, rng) =>
+      run(max, n, rng) match {
+        case Falsified(msg, _) => p.tag(msg).run(max, n, rng)
+        case x => x
+      }
+  }
+
+  def tag(msg: String) = Prop {
+    (max, n, rng) =>
+      run(max, n, rng) match {
+        case Falsified(e, c) => Falsified(msg + "\n" + e, c)
+        case x => x
+      }
+  }
+}
 
 object Prop {
 
@@ -53,6 +83,9 @@ object Prop {
 
   // テストケースの数。
   type TestCases = Int
+
+  // テストケースの最大サイズ
+  type MaxSize = Int
 
   // リスト 8-3
   def forAll[A](as: Gen[A])(f: A => Boolean): Prop =
