@@ -168,6 +168,10 @@ object Gen {
       if (d < g1Threshold) g1._1.sample else g2._1.sample))
   }
 
+  // EXERCIZE 8.12
+  def listOf[A](g: Gen[A]): SGen[List[A]] =
+    SGen(n => g.listOfN(n))
+
 }
 
 case class SGen[+A](forSize: Int => Gen[A]) {
