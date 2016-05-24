@@ -109,6 +109,28 @@ object Prop {
       }.find(_.isFalsified).getOrElse(Passed)
   }
 
+  // リスト 8-4
+  def forAll[A](g: SGen[A])(f: A => Boolean): Prop =
+    forAll(g(_))(f)
+
+  def forAll[A](g: Int => Gen[A])(f: A => Boolean): Prop = Prop {
+    (max, n, rng) =>
+      // サイズごとに、この数のランダムケースを生成。
+      val casesPerSize = (n + (max - 1)) / max
+
+      // サイズごとにプロパティを1つ作成するが、プロパティの数がn個を超えないようにする。
+      val props: Stream[Prop] =
+        Stream.from(0).take((n min max) + 1).map(i => forAll(g(i))(f))
+
+      // すべてを1つのプロパティにまとめる。
+      val prop: Prop =
+        props.map(p => Prop { (max, _, rng) =>
+          p.run(max, casesPerSize, rng)
+        }).toList.reduce(_ && _)
+
+      prop.run(max, n, rng)
+  }
+
   // ジェネレータを繰り返しサンプリングすることにより、Aの無限ストリームを生成。
   def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] =
     Stream.unfold(rng)(rng => Some(g.sample.run(rng)))
