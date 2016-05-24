@@ -88,8 +88,8 @@ object Prop {
   type MaxSize = Int
 
   // リスト 8-3
-  def forAll[A](as: Gen[A])(f: A => Boolean): Prop =
-    Prop { (n, rng) =>
+  def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop {
+    (n, rng) =>
       randomStream(as)(rng).zip(Stream.from(0)).take(n).map {
         // ペア(a, i)のストリーム。
         // aはランダム値、iはストリーム内でのそのインデックス。
@@ -107,7 +107,7 @@ object Prop {
             case e: Exception => Falsified(buildMsg(a, e), i)
           }
       }.find(_.isFalsified).getOrElse(Passed)
-    }
+  }
 
   // ジェネレータを繰り返しサンプリングすることにより、Aの無限ストリームを生成。
   def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] =
