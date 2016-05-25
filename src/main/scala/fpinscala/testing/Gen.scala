@@ -109,6 +109,9 @@ object Prop {
       }.find(_.isFalsified).getOrElse(Passed)
   }
 
+  def apply(f: (TestCases, RNG) => Result): Prop =
+    Prop { (_, n, rng) => f(n, rng) }
+
   // リスト 8-4
   def forAll[A](g: SGen[A])(f: A => Boolean): Prop =
     forAll(g(_))(f)
@@ -141,7 +144,16 @@ object Prop {
       s"stack trace:\n ${e.getStackTrace.mkString("\n")}"
 }
 
-case class Gen[A](sample: State[RNG, A]) {
+case class Gen[+A](sample: State[RNG, A]) {
+
+  def map[B](f: A => B): Gen[B] =
+    Gen(sample.map(f))
+
+  def map2[B, C](g: Gen[B])(f: (A, B) => C): Gen[C] =
+    Gen(sample.map2(g.sample)(f))
+
+  def **[B](g: Gen[B]): Gen[(A, B)] =
+    (this map2 g)((_, _))
 
   // EXERCIZE 8.6
   def flatMap[B](f: A => Gen[B]): Gen[B] =
