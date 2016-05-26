@@ -96,5 +96,15 @@ class GenSpec extends FlatSpec {
       res2.sample.run(rng)._1 == g2.sample.run(rng)._1)
   }
 
+  it should "8.4.1 単純な例" in {
+    val smallInt = Gen.choose(-10, 10)
+    val maxProp = Prop.forAll(Gen.listOf(smallInt)) { ns =>
+      println("########")
+      println(ns)
+      val max = ns.max
+      !ns.exists(_ > max)
+    }
+  }
+
 }
 
