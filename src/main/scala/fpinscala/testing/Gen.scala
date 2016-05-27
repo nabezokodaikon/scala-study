@@ -142,6 +142,19 @@ object Prop {
     s"test case: $s\n" +
       s"nenerated an exception: ${e.getMessage}\n" +
       s"stack trace:\n ${e.getStackTrace.mkString("\n")}"
+
+  def run(
+    p:         Prop,
+    maxSize:   Int  = 100,
+    testCases: Int  = 100,
+    rng:       RNG  = RNG.SimpleRNG(System.currentTimeMillis)
+  ): Unit =
+    p.run(maxSize, testCases, rng) match {
+      case Falsified(msg, n) =>
+        println(s"! Falsified after $n passed tests:\n $msg")
+      case Passed =>
+        println(s"+ OK, passed $testCases tests.")
+    }
 }
 
 case class Gen[+A](sample: State[RNG, A]) {
@@ -206,6 +219,9 @@ object Gen {
   def listOf[A](g: Gen[A]): SGen[List[A]] =
     SGen(n => g.listOfN(n))
 
+  // EXERCIZE 8.13
+  def listOf1[A](g: Gen[A]): SGen[List[A]] =
+    SGen(n => g.listOfN(n max 1))
 }
 
 case class SGen[+A](forSize: Int => Gen[A]) {
