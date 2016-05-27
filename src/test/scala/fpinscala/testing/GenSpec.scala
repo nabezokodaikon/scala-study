@@ -105,5 +105,17 @@ class GenSpec extends FlatSpec {
     Prop.run(maxProp)
   }
 
+  it should "EXERCIZE 8.14" in {
+    val smallInt = Gen.choose(-10, 10)
+    val sortedProp = Prop.forAll(Gen.listOf(smallInt)) { ns =>
+      val nss = ns.sorted
+      (nss.isEmpty || nss.tail.isEmpty || !nss.zip(nss.tail).exists {
+        case (a, b) => a > b
+      })
+        .&&(!ns.exists(!nss.contains(_)))
+        .&&(!nss.exists(!ns.contains(_)))
+    }
+    Prop.run(sortedProp)
+  }
 }
 
