@@ -185,6 +185,32 @@ object Prop {
       Par.unit(2)
     )(ES).get
   }
+
+  // リスト 8-10
+  // このジェネレータは、固定サイズのスレッドプールエグゼキュータを75%の確率で作成し、
+  // 固定サイズでないスレッドプールエグゼキュータを25%の確率で作成する。
+  val S: Gen[ExecutorService] = weighted(
+    choose(1, 4).map(Executors.newFixedThreadPool) -> .75,
+    unit(Executors.newCachedThreadPool) -> .25
+  )
+
+  def forAllPar[A](g: Gen[A])(f: A => Par[Boolean]): Prop =
+    forAll(S.map2(g)((_, _))) { case (s, a) => f(a)(s).get }
+
+  // リスト 8-12
+  def forAllPar2[A](g: Gen[A])(f: A => Par[Boolean]): Prop =
+    forAll(S ** g) { case (s, a) => f(a)(s).get }
+
+  // リスト 8-13
+  def forAllPar3[A](g: Gen[A])(f: A => Par[Boolean]): Prop =
+    forAll(S ** g) { case s ** a => f(a)(s).get }
+
+  // リスト 8-15
+  val pint = Gen.choose(0, 10) map (Par.unit(_))
+  val p4 = forAllPar(pint)(n => equal(Par.map(n)(y => y), n))
+
+  // EXERCIZE 8.17
+  val forkProp = Prop.forAllPar(pint2)(i => equal(Par.fork(i), i)) tag "fork"
 }
 
 case class Gen[+A](sample: State[RNG, A]) {
@@ -195,6 +221,7 @@ case class Gen[+A](sample: State[RNG, A]) {
   def map2[B, C](g: Gen[B])(f: (A, B) => C): Gen[C] =
     Gen(sample.map2(g.sample)(f))
 
+  // リスト 8-11
   def **[B](g: Gen[B]): Gen[(A, B)] =
     (this map2 g)((_, _))
 
@@ -252,6 +279,17 @@ object Gen {
   // EXERCIZE 8.13
   def listOf1[A](g: Gen[A]): SGen[List[A]] =
     SGen(n => g.listOfN(n max 1))
+
+  // リスト 8-14
+  // パターンマッチでタプルパターンを直接使用するときに必要な入れ子を不要にする。
+  object ** {
+    def unapply[A, B](p: (A, B)) = Some(p)
+  }
+
+  // EXERCIZE 8.16
+  lazy val pint2: Gen[Par[Int]] = choose(-100, 100).listOfN(choose(0, 20)).map(l =>
+    l.foldLeft(Par.unit(0))((p, i) =>
+      Par.fork { Par.map2(p, Par.unit(i))(_ + _) }))
 }
 
 case class SGen[+A](forSize: Int => Gen[A]) {
