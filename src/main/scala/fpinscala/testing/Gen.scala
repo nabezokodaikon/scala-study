@@ -211,6 +211,10 @@ object Prop {
 
   // EXERCIZE 8.17
   val forkProp = Prop.forAllPar(pint2)(i => equal(Par.fork(i), i)) tag "fork"
+
+  val isEven = (i: Int) => i % 2 == 0
+  // val takeWhileProp =
+  // Prop.forAll(Gen.listOf(int))(ns => ns.takeWhile(isEven).forAll(isEven))
 }
 
 case class Gen[+A](sample: State[RNG, A]) {
@@ -290,6 +294,10 @@ object Gen {
   lazy val pint2: Gen[Par[Int]] = choose(-100, 100).listOfN(choose(0, 20)).map(l =>
     l.foldLeft(Par.unit(0))((p, i) =>
       Par.fork { Par.map2(p, Par.unit(i))(_ + _) }))
+
+  // リスト 8-16
+  def genStringIntFn(g: Gen[Int]): Gen[String => Int] =
+    g map (i => (s => i))
 }
 
 case class SGen[+A](forSize: Int => Gen[A]) {
