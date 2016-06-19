@@ -6,7 +6,8 @@ class ParserSpec extends FlatSpec {
 
   behavior of "Parser テスト"
 
-  it should "char" in {
+  it should "Example" in {
+    assert(true)
   }
 
 }
